@@ -25,36 +25,87 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
+    }
+
+    /* 배경 애니메이션 */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 20%, rgba(99,102,241,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 80%, rgba(167,139,250,0.10) 0%, transparent 60%);
+      animation: bgPulse 8s ease-in-out infinite alternate;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes bgPulse {
+      from { opacity: 0.6; }
+      to   { opacity: 1; }
+    }
+
+    /* 카드 등장 애니메이션 */
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(32px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 56px 64px;
+      border-radius: 24px;
+      padding: 52px 60px;
       max-width: 520px;
       width: 90%;
       text-align: center;
       position: relative;
       overflow: hidden;
+      z-index: 1;
+      animation: cardIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+      box-shadow:
+        0 0 0 1px rgba(99,102,241,0.08),
+        0 8px 32px rgba(0,0,0,0.4),
+        0 0 60px rgba(99,102,241,0.06);
+      transition: box-shadow 0.3s;
+    }
+
+    .card:hover {
+      box-shadow:
+        0 0 0 1px rgba(99,102,241,0.18),
+        0 12px 48px rgba(0,0,0,0.5),
+        0 0 80px rgba(99,102,241,0.12);
     }
 
     .card::before {
       content: '';
       position: absolute;
-      top: -60px;
+      top: -80px;
       left: 50%;
       transform: translateX(-50%);
-      width: 240px;
-      height: 240px;
-      background: radial-gradient(circle, rgba(99,102,241,0.25) 0%, transparent 70%);
+      width: 280px;
+      height: 280px;
+      background: radial-gradient(circle, rgba(99,102,241,0.2) 0%, transparent 70%);
       pointer-events: none;
+      animation: glowPulse 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes glowPulse {
+      from { opacity: 0.5; transform: translateX(-50%) scale(0.9); }
+      to   { opacity: 1;   transform: translateX(-50%) scale(1.1); }
+    }
+
+    /* 아바타 */
+    @keyframes avatarIn {
+      from { opacity: 0; transform: scale(0.7) rotate(-8deg); }
+      to   { opacity: 1; transform: scale(1) rotate(0deg); }
     }
 
     .avatar {
       width: 110px;
       height: 110px;
-      border-radius: 16px;
+      border-radius: 20px;
       background: linear-gradient(135deg, #c7e8ff 0%, #e8f4ff 100%);
       display: flex;
       align-items: center;
@@ -62,14 +113,28 @@
       margin: 0 auto 28px;
       border: 3px solid var(--accent);
       overflow: hidden;
-      box-shadow: 0 0 0 4px rgba(99,102,241,0.2);
+      box-shadow: 0 0 0 6px rgba(99,102,241,0.15), 0 8px 24px rgba(99,102,241,0.2);
+      animation: avatarIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .avatar:hover {
+      transform: scale(1.06) rotate(2deg);
+      box-shadow: 0 0 0 8px rgba(99,102,241,0.2), 0 12px 32px rgba(99,102,241,0.3);
+    }
+
+    /* 이름 & 뱃지 */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     .name {
       font-size: 2rem;
       font-weight: 700;
       letter-spacing: -0.5px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      animation: fadeUp 0.5s ease 0.35s both;
     }
 
     .badge {
@@ -78,72 +143,111 @@
       color: #fff;
       font-size: 0.8rem;
       font-weight: 600;
-      padding: 4px 14px;
+      padding: 5px 16px;
       border-radius: 999px;
       letter-spacing: 1px;
       margin-bottom: 32px;
+      animation: fadeUp 0.5s ease 0.45s both;
+      box-shadow: 0 4px 12px rgba(99,102,241,0.35);
     }
 
     .divider {
       border: none;
       border-top: 1px solid var(--border);
-      margin: 0 auto 32px;
+      margin: 0 auto 28px;
       width: 60px;
+      animation: fadeUp 0.5s ease 0.5s both;
     }
 
+    /* 정보 리스트 */
     .info-list {
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 10px;
+      animation: fadeUp 0.5s ease 0.55s both;
     }
 
     .info-list li {
       display: flex;
       align-items: center;
-      gap: 12px;
-      background: rgba(99,102,241,0.08);
-      border: 1px solid rgba(99,102,241,0.15);
-      border-radius: 10px;
+      gap: 14px;
+      background: rgba(99,102,241,0.07);
+      border: 1px solid rgba(99,102,241,0.12);
+      border-radius: 12px;
       padding: 12px 18px;
       text-align: left;
+      cursor: default;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+
+    .info-list li:hover {
+      background: rgba(99,102,241,0.13);
+      border-color: rgba(99,102,241,0.3);
+      transform: translateX(4px);
+      box-shadow: -3px 0 0 var(--accent);
+    }
+
+    .info-list li.copyable {
+      cursor: pointer;
+    }
+
+    .info-list li.copyable::after {
+      content: '📋';
+      position: absolute;
+      right: 14px;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .info-list li.copyable:hover::after {
+      opacity: 0.6;
     }
 
     .info-list .icon {
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       flex-shrink: 0;
+      width: 28px;
+      text-align: center;
     }
 
     .info-list .label {
       color: var(--muted);
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       margin-bottom: 2px;
+      letter-spacing: 0.3px;
     }
 
     .info-list .value {
-      font-size: 0.95rem;
+      font-size: 0.93rem;
       font-weight: 500;
     }
 
+    /* 기술 스택 */
     .skills {
-      margin-top: 28px;
+      margin-top: 24px;
       text-align: left;
+      animation: fadeUp 0.5s ease 0.65s both;
     }
 
     .skills-label {
       color: var(--muted);
-      font-size: 0.75rem;
-      margin-bottom: 10px;
+      font-size: 0.72rem;
+      margin-bottom: 12px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
     }
 
     .skills-label::after {
       content: '';
       flex: 1;
       height: 1px;
-      background: var(--border);
+      background: linear-gradient(to right, var(--border), transparent);
     }
 
     .skills-tags {
@@ -153,104 +257,111 @@
     }
 
     .tag {
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 600;
-      padding: 4px 12px;
-      border-radius: 6px;
+      padding: 5px 13px;
+      border-radius: 8px;
+      letter-spacing: 0.4px;
+      transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+      cursor: default;
+    }
+
+    .tag:hover {
+      transform: translateY(-2px) scale(1.06);
+      filter: brightness(1.2);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .tag-lang  { background: rgba(99,102,241,0.15);  color: #a5b4fc; border: 1px solid rgba(99,102,241,0.3); }
+    .tag-db    { background: rgba(245,158,11,0.12);   color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+    .tag-infra { background: rgba(16,185,129,0.12);   color: #6ee7b7; border: 1px solid rgba(16,185,129,0.3); }
+    .tag-gis   { background: rgba(236,72,153,0.12);   color: #f9a8d4; border: 1px solid rgba(236,72,153,0.3); }
+
+    /* 푸터 */
+    .footer {
+      margin-top: 28px;
+      font-size: 0.73rem;
+      color: var(--muted);
+      animation: fadeUp 0.5s ease 0.75s both;
       letter-spacing: 0.3px;
     }
 
-    .tag-lang  { background: rgba(99,102,241,0.15); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.3); }
-    .tag-db    { background: rgba(245,158,11,0.12);  color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
-    .tag-infra { background: rgba(16,185,129,0.12);  color: #6ee7b7; border: 1px solid rgba(16,185,129,0.3); }
-    .tag-gis   { background: rgba(236,72,153,0.12);  color: #f9a8d4; border: 1px solid rgba(236,72,153,0.3); }
+    /* 복사 토스트 */
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(12px);
+      background: rgba(30, 33, 50, 0.95);
+      border: 1px solid rgba(99,102,241,0.3);
+      color: #a5b4fc;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 10px 22px;
+      border-radius: 999px;
+      opacity: 0;
+      transition: opacity 0.25s, transform 0.25s;
+      pointer-events: none;
+      z-index: 100;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 24px rgba(99,102,241,0.2);
+      white-space: nowrap;
+    }
 
-    .footer {
-      margin-top: 28px;
-      font-size: 0.75rem;
-      color: var(--muted);
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
   </style>
 </head>
 <body>
   <div class="card">
     <div class="avatar">
-      <!-- Ghibli-style character with glasses -->
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 110" width="110" height="110">
-        <!-- Sky background -->
         <rect width="110" height="110" fill="#c9e8f7"/>
-        <!-- Soft cloud behind head -->
         <ellipse cx="55" cy="30" rx="38" ry="32" fill="#e8f6ff" opacity="0.6"/>
-
-        <!-- Neck -->
         <rect x="44" y="74" width="22" height="18" rx="8" fill="#f5c9a0"/>
-        <!-- Shirt / collar -->
         <ellipse cx="55" cy="100" rx="30" ry="14" fill="#5b7fa6"/>
         <rect x="25" y="95" width="60" height="15" fill="#5b7fa6"/>
-        <!-- Shirt collar white -->
         <polygon points="48,92 55,105 62,92 58,92 55,100 52,92" fill="#e8f0fb"/>
-
-        <!-- Face -->
         <ellipse cx="55" cy="60" rx="26" ry="29" fill="#f8d5a8"/>
-        <!-- Ear left -->
         <ellipse cx="29" cy="62" rx="5" ry="7" fill="#f8d5a8"/>
-        <!-- Ear right -->
         <ellipse cx="81" cy="62" rx="5" ry="7" fill="#f8d5a8"/>
-        <!-- Ear inner -->
         <ellipse cx="29" cy="62" rx="3" ry="4.5" fill="#f0b88a"/>
         <ellipse cx="81" cy="62" rx="3" ry="4.5" fill="#f0b88a"/>
-
-        <!-- Hair top - Ghibli style dark, slightly wavy -->
         <ellipse cx="55" cy="38" rx="27" ry="16" fill="#2c2118"/>
         <rect x="28" y="38" width="54" height="12" fill="#2c2118"/>
-        <!-- Hair side left -->
         <ellipse cx="32" cy="52" rx="8" ry="14" fill="#2c2118"/>
-        <!-- Hair side right -->
         <ellipse cx="78" cy="52" rx="8" ry="14" fill="#2c2118"/>
-        <!-- Hair back top highlight -->
         <ellipse cx="55" cy="36" rx="18" ry="8" fill="#3d3020" opacity="0.5"/>
-
-        <!-- Eyebrows -->
         <path d="M40 54 Q45 51 50 53" stroke="#2c2118" stroke-width="2" fill="none" stroke-linecap="round"/>
         <path d="M60 53 Q65 51 70 54" stroke="#2c2118" stroke-width="2" fill="none" stroke-linecap="round"/>
-
-        <!-- Eyes whites -->
         <ellipse cx="45" cy="60" rx="7" ry="6.5" fill="white"/>
         <ellipse cx="65" cy="60" rx="7" ry="6.5" fill="white"/>
-        <!-- Irises -->
         <ellipse cx="45" cy="61" rx="4.5" ry="4.5" fill="#4a3728"/>
         <ellipse cx="65" cy="61" rx="4.5" ry="4.5" fill="#4a3728"/>
-        <!-- Pupils -->
         <ellipse cx="45.5" cy="61" rx="2.5" ry="2.8" fill="#1a1108"/>
         <ellipse cx="65.5" cy="61" rx="2.5" ry="2.8" fill="#1a1108"/>
-        <!-- Eye shine -->
         <ellipse cx="47" cy="59" rx="1.2" ry="1.2" fill="white"/>
         <ellipse cx="67" cy="59" rx="1.2" ry="1.2" fill="white"/>
-
-        <!-- Glasses frames - round Ghibli style -->
         <circle cx="45" cy="61" r="9" fill="none" stroke="#4a3010" stroke-width="2.2"/>
         <circle cx="65" cy="61" r="9" fill="none" stroke="#4a3010" stroke-width="2.2"/>
-        <!-- Glasses bridge -->
         <path d="M54 61 Q55 59.5 56 61" stroke="#4a3010" stroke-width="2" fill="none"/>
-        <!-- Glasses temples -->
         <line x1="36" y1="59" x2="30" y2="57" stroke="#4a3010" stroke-width="2" stroke-linecap="round"/>
         <line x1="74" y1="59" x2="80" y2="57" stroke="#4a3010" stroke-width="2" stroke-linecap="round"/>
-        <!-- Lens glare -->
         <path d="M39 56 Q40 55 42 56" stroke="white" stroke-width="1" fill="none" opacity="0.7" stroke-linecap="round"/>
         <path d="M59 56 Q60 55 62 56" stroke="white" stroke-width="1" fill="none" opacity="0.7" stroke-linecap="round"/>
-
-        <!-- Nose -->
         <path d="M53 67 Q55 70 57 67" stroke="#d4956a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <!-- Mouth - gentle smile -->
         <path d="M48 76 Q55 81 62 76" stroke="#c07a5a" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <!-- Cheek blush -->
         <ellipse cx="38" cy="71" rx="5" ry="3" fill="#f0a090" opacity="0.35"/>
         <ellipse cx="72" cy="71" rx="5" ry="3" fill="#f0a090" opacity="0.35"/>
       </svg>
     </div>
+
     <div class="name">송*우</div>
     <span class="badge">과 장</span>
     <hr class="divider" />
+
     <ul class="info-list">
       <li>
         <span class="icon">🏢</span>
@@ -259,7 +370,7 @@
           <div class="value">한전KDN</div>
         </div>
       </li>
-      <li>
+      <li class="copyable" data-copy="s*****_**@kdn.com" title="클릭하여 복사">
         <span class="icon">📧</span>
         <div>
           <div class="label">이메일</div>
@@ -273,7 +384,7 @@
           <div class="value">과장</div>
         </div>
       </li>
-      <li>
+      <li class="copyable" data-copy="010-****-****" title="클릭하여 복사">
         <span class="icon">📱</span>
         <div>
           <div class="label">연락처</div>
@@ -281,6 +392,7 @@
         </div>
       </li>
     </ul>
+
     <div class="skills">
       <div class="skills-label">🛠 기술 스택</div>
       <div class="skills-tags">
@@ -295,7 +407,33 @@
         <span class="tag tag-infra">JEUS</span>
       </div>
     </div>
+
     <p class="footer">풀스택 바이브코딩 실습 프로젝트</p>
   </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const toast = document.getElementById('toast');
+    let toastTimer;
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    document.querySelectorAll('.copyable').forEach(el => {
+      el.addEventListener('click', () => {
+        const text = el.dataset.copy;
+        navigator.clipboard.writeText(text).then(() => {
+          showToast('✅ 복사됐습니다!');
+        }).catch(() => {
+          showToast('📋 ' + text);
+        });
+      });
+    });
+  </script>
 </body>
 </html>
