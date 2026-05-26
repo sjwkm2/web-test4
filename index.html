@@ -8,13 +8,15 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0f1117;
-      --surface: #1a1d27;
-      --border: #2a2d3e;
-      --accent: #6366f1;
-      --accent2: #a78bfa;
-      --text: #e2e8f0;
-      --muted: #94a3b8;
+      --bg: #f1f5f9;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --border2: #cbd5e1;
+      --accent: #4f46e5;
+      --accent2: #7c3aed;
+      --text: #1e293b;
+      --muted: #64748b;
+      --subtle: #f8fafc;
     }
 
     body {
@@ -28,27 +30,19 @@
       overflow: hidden;
     }
 
-    /* 배경 애니메이션 */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
       background:
-        radial-gradient(ellipse 80% 60% at 20% 20%, rgba(99,102,241,0.12) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 50% at 80% 80%, rgba(167,139,250,0.10) 0%, transparent 60%);
-      animation: bgPulse 8s ease-in-out infinite alternate;
+        radial-gradient(ellipse 70% 50% at 15% 15%, rgba(79,70,229,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 85% 85%, rgba(124,58,237,0.05) 0%, transparent 60%);
       pointer-events: none;
       z-index: 0;
     }
 
-    @keyframes bgPulse {
-      from { opacity: 0.6; }
-      to   { opacity: 1; }
-    }
-
-    /* 카드 등장 애니메이션 */
     @keyframes cardIn {
-      from { opacity: 0; transform: translateY(32px) scale(0.97); }
+      from { opacity: 0; transform: translateY(28px) scale(0.97); }
       to   { opacity: 1; transform: translateY(0) scale(1); }
     }
 
@@ -63,42 +57,32 @@
       position: relative;
       overflow: hidden;
       z-index: 1;
-      animation: cardIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation: cardIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
       box-shadow:
-        0 0 0 1px rgba(99,102,241,0.08),
-        0 8px 32px rgba(0,0,0,0.4),
-        0 0 60px rgba(99,102,241,0.06);
+        0 1px 3px rgba(0,0,0,0.06),
+        0 8px 32px rgba(0,0,0,0.08),
+        0 24px 56px rgba(0,0,0,0.06);
       transition: box-shadow 0.3s;
     }
 
     .card:hover {
       box-shadow:
-        0 0 0 1px rgba(99,102,241,0.18),
-        0 12px 48px rgba(0,0,0,0.5),
-        0 0 80px rgba(99,102,241,0.12);
+        0 1px 3px rgba(0,0,0,0.06),
+        0 12px 40px rgba(0,0,0,0.11),
+        0 28px 64px rgba(79,70,229,0.07);
     }
 
     .card::before {
       content: '';
       position: absolute;
-      top: -80px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 280px;
-      height: 280px;
-      background: radial-gradient(circle, rgba(99,102,241,0.2) 0%, transparent 70%);
-      pointer-events: none;
-      animation: glowPulse 4s ease-in-out infinite alternate;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 24px 24px 0 0;
     }
 
-    @keyframes glowPulse {
-      from { opacity: 0.5; transform: translateX(-50%) scale(0.9); }
-      to   { opacity: 1;   transform: translateX(-50%) scale(1.1); }
-    }
-
-    /* 아바타 */
     @keyframes avatarIn {
-      from { opacity: 0; transform: scale(0.7) rotate(-8deg); }
+      from { opacity: 0; transform: scale(0.75) rotate(-6deg); }
       to   { opacity: 1; transform: scale(1) rotate(0deg); }
     }
 
@@ -106,108 +90,103 @@
       width: 110px;
       height: 110px;
       border-radius: 20px;
-      background: linear-gradient(135deg, #c7e8ff 0%, #e8f4ff 100%);
+      background: linear-gradient(135deg, #dbeafe 0%, #ede9fe 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 28px;
-      border: 3px solid var(--accent);
+      margin: 12px auto 28px;
+      border: 2px solid var(--border);
       overflow: hidden;
-      box-shadow: 0 0 0 6px rgba(99,102,241,0.15), 0 8px 24px rgba(99,102,241,0.2);
-      animation: avatarIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+      box-shadow: 0 4px 16px rgba(79,70,229,0.12), 0 2px 6px rgba(0,0,0,0.06);
+      animation: avatarIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
       transition: transform 0.3s, box-shadow 0.3s;
     }
 
     .avatar:hover {
-      transform: scale(1.06) rotate(2deg);
-      box-shadow: 0 0 0 8px rgba(99,102,241,0.2), 0 12px 32px rgba(99,102,241,0.3);
+      transform: scale(1.05) rotate(2deg);
+      box-shadow: 0 8px 24px rgba(79,70,229,0.18), 0 4px 10px rgba(0,0,0,0.08);
     }
 
-    /* 이름 & 뱃지 */
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
+      from { opacity: 0; transform: translateY(14px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
     .name {
-      font-size: 2rem;
+      font-size: 1.9rem;
       font-weight: 700;
       letter-spacing: -0.5px;
+      color: var(--text);
       margin-bottom: 10px;
-      animation: fadeUp 0.5s ease 0.35s both;
+      animation: fadeUp 0.5s ease 0.3s both;
     }
 
     .badge {
       display: inline-block;
       background: linear-gradient(135deg, var(--accent), var(--accent2));
       color: #fff;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 600;
       padding: 5px 16px;
       border-radius: 999px;
       letter-spacing: 1px;
       margin-bottom: 32px;
-      animation: fadeUp 0.5s ease 0.45s both;
-      box-shadow: 0 4px 12px rgba(99,102,241,0.35);
+      animation: fadeUp 0.5s ease 0.4s both;
+      box-shadow: 0 3px 10px rgba(79,70,229,0.25);
     }
 
     .divider {
       border: none;
       border-top: 1px solid var(--border);
       margin: 0 auto 28px;
-      width: 60px;
-      animation: fadeUp 0.5s ease 0.5s both;
+      width: 48px;
+      animation: fadeUp 0.5s ease 0.45s both;
     }
 
-    /* 정보 리스트 */
     .info-list {
       list-style: none;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      animation: fadeUp 0.5s ease 0.55s both;
+      animation: fadeUp 0.5s ease 0.5s both;
     }
 
     .info-list li {
       display: flex;
       align-items: center;
       gap: 14px;
-      background: rgba(99,102,241,0.07);
-      border: 1px solid rgba(99,102,241,0.12);
+      background: var(--subtle);
+      border: 1px solid var(--border);
       border-radius: 12px;
       padding: 12px 18px;
       text-align: left;
       cursor: default;
-      transition: background 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      transition: background 0.18s, border-color 0.18s, transform 0.18s, box-shadow 0.18s;
       position: relative;
     }
 
     .info-list li:hover {
-      background: rgba(99,102,241,0.13);
-      border-color: rgba(99,102,241,0.3);
-      transform: translateX(4px);
+      background: #f0f4ff;
+      border-color: #c7d2fe;
+      transform: translateX(3px);
       box-shadow: -3px 0 0 var(--accent);
     }
 
-    .info-list li.copyable {
-      cursor: pointer;
-    }
+    .info-list li.copyable { cursor: pointer; }
 
     .info-list li.copyable::after {
       content: '📋';
       position: absolute;
       right: 14px;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       opacity: 0;
       transition: opacity 0.2s;
     }
 
-    .info-list li.copyable:hover::after {
-      opacity: 0.6;
-    }
+    .info-list li.copyable:hover::after { opacity: 0.5; }
 
     .info-list .icon {
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       flex-shrink: 0;
       width: 28px;
       text-align: center;
@@ -215,31 +194,33 @@
 
     .info-list .label {
       color: var(--muted);
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       margin-bottom: 2px;
       letter-spacing: 0.3px;
-    }
-
-    .info-list .value {
-      font-size: 0.93rem;
       font-weight: 500;
     }
 
-    /* 기술 스택 */
+    .info-list .value {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
     .skills {
       margin-top: 24px;
       text-align: left;
-      animation: fadeUp 0.5s ease 0.65s both;
+      animation: fadeUp 0.5s ease 0.6s both;
     }
 
     .skills-label {
       color: var(--muted);
-      font-size: 0.72rem;
+      font-size: 0.7rem;
+      font-weight: 600;
       margin-bottom: 12px;
       display: flex;
       align-items: center;
       gap: 8px;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.6px;
       text-transform: uppercase;
     }
 
@@ -247,64 +228,59 @@
       content: '';
       flex: 1;
       height: 1px;
-      background: linear-gradient(to right, var(--border), transparent);
+      background: linear-gradient(to right, var(--border2), transparent);
     }
 
     .skills-tags {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 7px;
     }
 
     .tag {
-      font-size: 0.76rem;
+      font-size: 0.74rem;
       font-weight: 600;
-      padding: 5px 13px;
-      border-radius: 8px;
-      letter-spacing: 0.4px;
-      transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+      padding: 4px 12px;
+      border-radius: 7px;
+      letter-spacing: 0.3px;
+      transition: transform 0.15s, box-shadow 0.15s;
       cursor: default;
     }
 
     .tag:hover {
-      transform: translateY(-2px) scale(1.06);
-      filter: brightness(1.2);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
-    .tag-lang  { background: rgba(99,102,241,0.15);  color: #a5b4fc; border: 1px solid rgba(99,102,241,0.3); }
-    .tag-db    { background: rgba(245,158,11,0.12);   color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
-    .tag-infra { background: rgba(16,185,129,0.12);   color: #6ee7b7; border: 1px solid rgba(16,185,129,0.3); }
-    .tag-gis   { background: rgba(236,72,153,0.12);   color: #f9a8d4; border: 1px solid rgba(236,72,153,0.3); }
+    .tag-lang  { background: #ede9fe; color: #5b21b6; border: 1px solid #ddd6fe; }
+    .tag-db    { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+    .tag-infra { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    .tag-gis   { background: #fce7f3; color: #9d174d; border: 1px solid #fbcfe8; }
 
-    /* 푸터 */
     .footer {
       margin-top: 28px;
-      font-size: 0.73rem;
-      color: var(--muted);
-      animation: fadeUp 0.5s ease 0.75s both;
+      font-size: 0.72rem;
+      color: #94a3b8;
+      animation: fadeUp 0.5s ease 0.7s both;
       letter-spacing: 0.3px;
     }
 
-    /* 복사 토스트 */
     .toast {
       position: fixed;
       bottom: 32px;
       left: 50%;
       transform: translateX(-50%) translateY(12px);
-      background: rgba(30, 33, 50, 0.95);
-      border: 1px solid rgba(99,102,241,0.3);
-      color: #a5b4fc;
+      background: #1e293b;
+      color: #e2e8f0;
       font-size: 0.82rem;
       font-weight: 600;
       padding: 10px 22px;
       border-radius: 999px;
       opacity: 0;
-      transition: opacity 0.25s, transform 0.25s;
+      transition: opacity 0.22s, transform 0.22s;
       pointer-events: none;
       z-index: 100;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 4px 24px rgba(99,102,241,0.2);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
       white-space: nowrap;
     }
 
