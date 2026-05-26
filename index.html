@@ -596,7 +596,7 @@ public class HelloKDN {
 <%
     String user = (String) session.getAttribute("user");
 %>
-<c:if test="${not empty user}">
+<c:if test="\${not empty user}">
   <p>환영합니다, <%= user %>님!</p>
 </c:if>
 <c:otherwise>
