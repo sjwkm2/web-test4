@@ -1948,6 +1948,110 @@
       .ai-msg-bubble { max-width: 90%; }
       .compare-modal { max-width: 100%; margin: 0; border-radius: var(--radius-lg); }
     }
+
+    /* ─── 목차(TOC) 사이드바 레이아웃 ─── */
+    .page.page-toc-layout.active {
+      display: flex !important;
+      height: calc(100vh - var(--total-nav));
+      overflow: hidden;
+    }
+    .page-toc-sidebar {
+      width: 210px;
+      flex-shrink: 0;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+      overflow-y: auto;
+    }
+    .page-toc-header {
+      padding: 20px 16px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-toc-page-title {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+    .page-toc-label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: uppercase;
+      padding: 14px 16px 6px;
+    }
+    .page-toc-nav {
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 16px;
+    }
+    .page-toc-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      padding: 9px 14px;
+      font-size: 0.79rem;
+      color: var(--muted);
+      background: none;
+      border: none;
+      border-left: 2px solid transparent;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      transition: color 0.15s, background 0.15s, border-color 0.15s;
+      line-height: 1.4;
+    }
+    .page-toc-item:hover { color: var(--accent); background: var(--accent-lt); }
+    .page-toc-item.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      background: var(--accent-lt);
+      font-weight: 600;
+    }
+    .page-content-main {
+      flex: 1;
+      overflow-y: auto;
+      min-width: 0;
+    }
+    .page-content-main .section-wrap {
+      max-width: 100%;
+      padding: 36px 40px 60px;
+    }
+    .page.page-toc-layout .req-grid { grid-template-columns: 1fr; }
+    .page.page-toc-layout .guide-grid { grid-template-columns: 1fr; }
+    .page.page-toc-layout .checklist-wrap { grid-template-columns: 1fr; }
+    .toc-section-anchor { scroll-margin-top: 20px; }
+    @media (max-width: 840px) {
+      .page.page-toc-layout.active {
+        flex-direction: column;
+        height: auto;
+        overflow: visible;
+      }
+      .page-toc-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        overflow: visible;
+      }
+      .page-toc-nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: 6px 10px 10px;
+        gap: 4px;
+      }
+      .page-toc-item {
+        border-left: none !important;
+        border-bottom: 2px solid transparent;
+        border-radius: var(--radius-sm);
+        padding: 5px 9px;
+        font-size: 0.73rem;
+        width: auto;
+      }
+      .page-toc-item.active { border-bottom-color: var(--accent) !important; background: var(--accent-lt); }
+      .page-content-main { overflow: visible; height: auto; }
+    }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
@@ -2129,93 +2233,108 @@
   <!-- ══════════════════════════════════
        요구사항 영역 페이지
   ══════════════════════════════════ -->
-  <section class="page" id="page-requirements">
-    <div class="section-wrap">
-      <h2 class="section-title">📐 요구사항 영역</h2>
-      <div class="req-grid">
-        <div class="req-cat">
-          <div class="req-cat-label">🔧 기능 요구사항</div>
-          <div class="req-row" data-req="기능_사용자관리">
-            <span class="req-row-icon">👤</span>
-            <div><div class="req-row-name">사용자 관리</div><div class="req-row-hint">인증·권한·계정 관리</div></div>
-            <span class="req-arrow">›</span>
+  <section class="page page-toc-layout" id="page-requirements">
+    <div class="page-toc-sidebar">
+      <div class="page-toc-header">
+        <div class="page-toc-page-title">📐 요구사항 영역</div>
+      </div>
+      <div class="page-toc-label">목차</div>
+      <nav class="page-toc-nav">
+        <button class="page-toc-item active" data-target="req-func">🔧 기능 요구사항</button>
+        <button class="page-toc-item" data-target="req-perf">⚡ 성능 요구사항</button>
+        <button class="page-toc-item" data-target="req-sys">🖥️ 시스템장비구성</button>
+        <button class="page-toc-item" data-target="req-if">🔗 인터페이스 요구사항</button>
+        <button class="page-toc-item" data-target="req-data">🗃️ 데이터 요구사항</button>
+      </nav>
+    </div>
+    <div class="page-content-main">
+      <div class="section-wrap">
+        <h2 class="section-title">📐 요구사항 영역</h2>
+        <div class="req-grid">
+          <div class="req-cat toc-section-anchor" id="req-func">
+            <div class="req-cat-label">🔧 기능 요구사항</div>
+            <div class="req-row" data-req="기능_사용자관리">
+              <span class="req-row-icon">👤</span>
+              <div><div class="req-row-name">사용자 관리</div><div class="req-row-hint">인증·권한·계정 관리</div></div>
+              <span class="req-arrow">›</span>
+            </div>
+            <div class="req-row" data-req="기능_데이터처리">
+              <span class="req-row-icon">⚙️</span>
+              <div><div class="req-row-name">데이터 처리</div><div class="req-row-hint">입력·조회·수정·삭제</div></div>
+              <span class="req-arrow">›</span>
+            </div>
+            <div class="req-row" data-req="기능_보고서출력">
+              <span class="req-row-icon">📄</span>
+              <div><div class="req-row-name">보고서·출력</div><div class="req-row-hint">통계·출력·내보내기</div></div>
+              <span class="req-arrow">›</span>
+            </div>
           </div>
-          <div class="req-row" data-req="기능_데이터처리">
-            <span class="req-row-icon">⚙️</span>
-            <div><div class="req-row-name">데이터 처리</div><div class="req-row-hint">입력·조회·수정·삭제</div></div>
-            <span class="req-arrow">›</span>
+          <div class="req-cat toc-section-anchor" id="req-perf">
+            <div class="req-cat-label">⚡ 성능 요구사항</div>
+            <div class="req-row" data-req="성능_응답시간">
+              <span class="req-row-icon">⏱️</span>
+              <div><div class="req-row-name">응답 시간</div><div class="req-row-hint">화면·트랜잭션 처리 속도</div></div>
+              <span class="req-arrow">›</span>
+            </div>
+            <div class="req-row" data-req="성능_처리용량">
+              <span class="req-row-icon">📊</span>
+              <div><div class="req-row-name">처리 용량</div><div class="req-row-hint">동시사용자·TPS 기준</div></div>
+              <span class="req-arrow">›</span>
+            </div>
+            <div class="req-row" data-req="성능_가용성">
+              <span class="req-row-icon">🔄</span>
+              <div><div class="req-row-name">가용성</div><div class="req-row-hint">SLA·장애 복구 시간</div></div>
+              <span class="req-arrow">›</span>
+            </div>
           </div>
-          <div class="req-row" data-req="기능_보고서출력">
-            <span class="req-row-icon">📄</span>
-            <div><div class="req-row-name">보고서·출력</div><div class="req-row-hint">통계·출력·내보내기</div></div>
-            <span class="req-arrow">›</span>
+          <div class="req-cat toc-section-anchor" id="req-sys">
+            <div class="req-cat-label">🖥️ 시스템장비구성</div>
+            <div class="req-row" data-req="시스템_서버">
+              <span class="req-row-icon">🗄️</span>
+              <div><div class="req-row-name">서버 구성</div><div class="req-row-hint">웹·WAS·DB 서버 사양</div></div>
+              <span class="req-arrow">›</span>
+            </div>
+            <div class="req-row" data-req="시스템_네트워크">
+              <span class="req-row-icon">🌐</span>
+              <div><div class="req-row-name">네트워크</div><div class="req-row-hint">대역폭·보안 장비</div></div>
+              <span class="req-arrow">›</span>
+            </div>
+            <div class="req-row" data-req="시스템_보안">
+              <span class="req-row-icon">🔒</span>
+              <div><div class="req-row-name">보안 장비</div><div class="req-row-hint">방화벽·IPS·백신</div></div>
+              <span class="req-arrow">›</span>
+            </div>
           </div>
-        </div>
-        <div class="req-cat">
-          <div class="req-cat-label">⚡ 성능 요구사항</div>
-          <div class="req-row" data-req="성능_응답시간">
-            <span class="req-row-icon">⏱️</span>
-            <div><div class="req-row-name">응답 시간</div><div class="req-row-hint">화면·트랜잭션 처리 속도</div></div>
-            <span class="req-arrow">›</span>
+          <div class="req-cat toc-section-anchor" id="req-if">
+            <div class="req-cat-label">🔗 인터페이스 요구사항</div>
+            <div class="req-row" data-req="인터페이스_외부연계">
+              <span class="req-row-icon">🔌</span>
+              <div><div class="req-row-name">외부 시스템 연계</div><div class="req-row-hint">API·전문·파일 연동</div></div>
+              <span class="req-arrow">›</span>
+            </div>
+            <div class="req-row" data-req="인터페이스_표준">
+              <span class="req-row-icon">📡</span>
+              <div><div class="req-row-name">표준 프로토콜</div><div class="req-row-hint">REST·SOAP·전자정부</div></div>
+              <span class="req-arrow">›</span>
+            </div>
           </div>
-          <div class="req-row" data-req="성능_처리용량">
-            <span class="req-row-icon">📊</span>
-            <div><div class="req-row-name">처리 용량</div><div class="req-row-hint">동시사용자·TPS 기준</div></div>
-            <span class="req-arrow">›</span>
-          </div>
-          <div class="req-row" data-req="성능_가용성">
-            <span class="req-row-icon">🔄</span>
-            <div><div class="req-row-name">가용성</div><div class="req-row-hint">SLA·장애 복구 시간</div></div>
-            <span class="req-arrow">›</span>
-          </div>
-        </div>
-        <div class="req-cat">
-          <div class="req-cat-label">🖥️ 시스템장비구성</div>
-          <div class="req-row" data-req="시스템_서버">
-            <span class="req-row-icon">🗄️</span>
-            <div><div class="req-row-name">서버 구성</div><div class="req-row-hint">웹·WAS·DB 서버 사양</div></div>
-            <span class="req-arrow">›</span>
-          </div>
-          <div class="req-row" data-req="시스템_네트워크">
-            <span class="req-row-icon">🌐</span>
-            <div><div class="req-row-name">네트워크</div><div class="req-row-hint">대역폭·보안 장비</div></div>
-            <span class="req-arrow">›</span>
-          </div>
-          <div class="req-row" data-req="시스템_보안">
-            <span class="req-row-icon">🔒</span>
-            <div><div class="req-row-name">보안 장비</div><div class="req-row-hint">방화벽·IPS·백신</div></div>
-            <span class="req-arrow">›</span>
-          </div>
-        </div>
-        <div class="req-cat">
-          <div class="req-cat-label">🔗 인터페이스 요구사항</div>
-          <div class="req-row" data-req="인터페이스_외부연계">
-            <span class="req-row-icon">🔌</span>
-            <div><div class="req-row-name">외부 시스템 연계</div><div class="req-row-hint">API·전문·파일 연동</div></div>
-            <span class="req-arrow">›</span>
-          </div>
-          <div class="req-row" data-req="인터페이스_표준">
-            <span class="req-row-icon">📡</span>
-            <div><div class="req-row-name">표준 프로토콜</div><div class="req-row-hint">REST·SOAP·전자정부</div></div>
-            <span class="req-arrow">›</span>
-          </div>
-        </div>
-        <div class="req-cat">
-          <div class="req-cat-label">🗃️ 데이터 요구사항</div>
-          <div class="req-row" data-req="데이터_표준">
-            <span class="req-row-icon">📋</span>
-            <div><div class="req-row-name">데이터 표준</div><div class="req-row-hint">코드·용어·형식 표준</div></div>
-            <span class="req-arrow">›</span>
-          </div>
-          <div class="req-row" data-req="데이터_품질">
-            <span class="req-row-icon">✅</span>
-            <div><div class="req-row-name">품질 관리</div><div class="req-row-hint">정확성·완전성·유효성</div></div>
-            <span class="req-arrow">›</span>
-          </div>
-          <div class="req-row" data-req="데이터_보존">
-            <span class="req-row-icon">💾</span>
-            <div><div class="req-row-name">보존·백업</div><div class="req-row-hint">보존기간·백업 정책</div></div>
-            <span class="req-arrow">›</span>
+          <div class="req-cat toc-section-anchor" id="req-data">
+            <div class="req-cat-label">🗃️ 데이터 요구사항</div>
+            <div class="req-row" data-req="데이터_표준">
+              <span class="req-row-icon">📋</span>
+              <div><div class="req-row-name">데이터 표준</div><div class="req-row-hint">코드·용어·형식 표준</div></div>
+              <span class="req-arrow">›</span>
+            </div>
+            <div class="req-row" data-req="데이터_품질">
+              <span class="req-row-icon">✅</span>
+              <div><div class="req-row-name">품질 관리</div><div class="req-row-hint">정확성·완전성·유효성</div></div>
+              <span class="req-arrow">›</span>
+            </div>
+            <div class="req-row" data-req="데이터_보존">
+              <span class="req-row-icon">💾</span>
+              <div><div class="req-row-name">보존·백업</div><div class="req-row-hint">보존기간·백업 정책</div></div>
+              <span class="req-arrow">›</span>
+            </div>
           </div>
         </div>
       </div>
@@ -2225,75 +2344,91 @@
   <!-- ══════════════════════════════════
        작성 가이드 페이지
   ══════════════════════════════════ -->
-  <section class="page" id="page-guide">
-    <div class="section-wrap">
-      <h2 class="section-title">📝 작성 가이드</h2>
-      <div class="guide-grid">
-        <div class="guide-card">
-          <div class="guide-step">1</div>
-          <div class="guide-card-title">현황 파악 및 범위 정의</div>
-          <div class="guide-card-desc">사업 목적과 배경을 명확히 하고, 구축 범위를 정의합니다. 현행 시스템 분석과 이해관계자 인터뷰를 통해 핵심 요구사항을 도출합니다.</div>
-          <ul class="guide-list">
-            <li>현행 시스템 현황 분석 (AS-IS)</li>
-            <li>목표 시스템 범위 정의 (TO-BE)</li>
-            <li>이해관계자 목록 및 역할 정리</li>
-            <li>사업 제약사항 사전 파악</li>
-          </ul>
-        </div>
-        <div class="guide-card">
-          <div class="guide-step">2</div>
-          <div class="guide-card-title">기능 요구사항 상세화</div>
-          <div class="guide-card-desc">시스템이 수행해야 할 기능을 유스케이스 단위로 분류하고, 입·출력, 처리 규칙, 예외 조건을 명세합니다.</div>
-          <ul class="guide-list">
-            <li>유스케이스 다이어그램 작성</li>
-            <li>기능별 입출력 데이터 명세</li>
-            <li>업무 처리 규칙 및 예외 정의</li>
-            <li>화면 목록 및 메뉴 구조 작성</li>
-          </ul>
-        </div>
-        <div class="guide-card">
-          <div class="guide-step">3</div>
-          <div class="guide-card-title">비기능 요구사항 정량화</div>
-          <div class="guide-card-desc">성능·보안·가용성 요구사항을 수치로 명시합니다. 모호한 표현 대신 측정 가능한 기준을 제시해야 합니다.</div>
-          <ul class="guide-list">
-            <li>응답시간: "3초 이내" (페이지 로딩 기준)</li>
-            <li>가용성: "99.9% 이상 (연간 다운타임 8.7h)"</li>
-            <li>동시사용자: "최대 N명 기준 TPS 명시"</li>
-            <li>보안: 전자정부 보안 취약점 점검 기준 준수</li>
-          </ul>
-        </div>
-        <div class="guide-card">
-          <div class="guide-step">4</div>
-          <div class="guide-card-title">인터페이스 및 데이터 요구사항</div>
-          <div class="guide-card-desc">연계 시스템 목록과 데이터 송수신 규격을 명시합니다. 데이터 표준·코드 정합성, 보존 기간 등을 함께 정의합니다.</div>
-          <ul class="guide-list">
-            <li>연계 시스템 목록 및 연동 방식(API·전문·파일)</li>
-            <li>데이터 표준 코드 적용 범위</li>
-            <li>개인정보·민감정보 처리 방침</li>
-            <li>데이터 이관 계획 (기존 시스템 데이터)</li>
-          </ul>
-        </div>
-        <div class="guide-card">
-          <div class="guide-step">5</div>
-          <div class="guide-card-title">요구사항 검토 및 확정</div>
-          <div class="guide-card-desc">작성된 요구사항을 이해관계자와 함께 검토하여 누락·모호·충돌 항목을 보완합니다. 확정 후 기준선(Baseline)으로 관리합니다.</div>
-          <ul class="guide-list">
-            <li>요구사항 품질 기준: 완전성·일관성·추적성</li>
-            <li>이해관계자 검토 회의 진행</li>
-            <li>요구사항 식별자 부여 및 추적 매트릭스 작성</li>
-            <li>변경 관리 절차 수립</li>
-          </ul>
-        </div>
-        <div class="guide-card">
-          <div class="guide-step">6</div>
-          <div class="guide-card-title">작성 시 주의사항</div>
-          <div class="guide-card-desc">요구사항 작성에서 흔히 발생하는 오류 유형과 예방 방법입니다.</div>
-          <ul class="guide-list">
-            <li>모호한 표현 금지: "빠르게" → "3초 이내"</li>
-            <li>복합 요구사항 분리: 하나의 항목에 하나의 요건</li>
-            <li>구현 방법 미지정: 무엇을(WHAT), 어떻게는 수주사</li>
-            <li>우선순위 부여: 필수(Must)/권장(Should)/선택(May)</li>
-          </ul>
+  <section class="page page-toc-layout" id="page-guide">
+    <div class="page-toc-sidebar">
+      <div class="page-toc-header">
+        <div class="page-toc-page-title">📝 작성 가이드</div>
+      </div>
+      <div class="page-toc-label">목차</div>
+      <nav class="page-toc-nav">
+        <button class="page-toc-item active" data-target="guide-1">1. 현황 파악 및 범위 정의</button>
+        <button class="page-toc-item" data-target="guide-2">2. 기능 요구사항 상세화</button>
+        <button class="page-toc-item" data-target="guide-3">3. 비기능 요구사항 정량화</button>
+        <button class="page-toc-item" data-target="guide-4">4. 인터페이스 및 데이터</button>
+        <button class="page-toc-item" data-target="guide-5">5. 요구사항 검토 및 확정</button>
+        <button class="page-toc-item" data-target="guide-6">6. 작성 시 주의사항</button>
+      </nav>
+    </div>
+    <div class="page-content-main">
+      <div class="section-wrap">
+        <h2 class="section-title">📝 작성 가이드</h2>
+        <div class="guide-grid">
+          <div class="guide-card toc-section-anchor" id="guide-1">
+            <div class="guide-step">1</div>
+            <div class="guide-card-title">현황 파악 및 범위 정의</div>
+            <div class="guide-card-desc">사업 목적과 배경을 명확히 하고, 구축 범위를 정의합니다. 현행 시스템 분석과 이해관계자 인터뷰를 통해 핵심 요구사항을 도출합니다.</div>
+            <ul class="guide-list">
+              <li>현행 시스템 현황 분석 (AS-IS)</li>
+              <li>목표 시스템 범위 정의 (TO-BE)</li>
+              <li>이해관계자 목록 및 역할 정리</li>
+              <li>사업 제약사항 사전 파악</li>
+            </ul>
+          </div>
+          <div class="guide-card toc-section-anchor" id="guide-2">
+            <div class="guide-step">2</div>
+            <div class="guide-card-title">기능 요구사항 상세화</div>
+            <div class="guide-card-desc">시스템이 수행해야 할 기능을 유스케이스 단위로 분류하고, 입·출력, 처리 규칙, 예외 조건을 명세합니다.</div>
+            <ul class="guide-list">
+              <li>유스케이스 다이어그램 작성</li>
+              <li>기능별 입출력 데이터 명세</li>
+              <li>업무 처리 규칙 및 예외 정의</li>
+              <li>화면 목록 및 메뉴 구조 작성</li>
+            </ul>
+          </div>
+          <div class="guide-card toc-section-anchor" id="guide-3">
+            <div class="guide-step">3</div>
+            <div class="guide-card-title">비기능 요구사항 정량화</div>
+            <div class="guide-card-desc">성능·보안·가용성 요구사항을 수치로 명시합니다. 모호한 표현 대신 측정 가능한 기준을 제시해야 합니다.</div>
+            <ul class="guide-list">
+              <li>응답시간: "3초 이내" (페이지 로딩 기준)</li>
+              <li>가용성: "99.9% 이상 (연간 다운타임 8.7h)"</li>
+              <li>동시사용자: "최대 N명 기준 TPS 명시"</li>
+              <li>보안: 전자정부 보안 취약점 점검 기준 준수</li>
+            </ul>
+          </div>
+          <div class="guide-card toc-section-anchor" id="guide-4">
+            <div class="guide-step">4</div>
+            <div class="guide-card-title">인터페이스 및 데이터 요구사항</div>
+            <div class="guide-card-desc">연계 시스템 목록과 데이터 송수신 규격을 명시합니다. 데이터 표준·코드 정합성, 보존 기간 등을 함께 정의합니다.</div>
+            <ul class="guide-list">
+              <li>연계 시스템 목록 및 연동 방식(API·전문·파일)</li>
+              <li>데이터 표준 코드 적용 범위</li>
+              <li>개인정보·민감정보 처리 방침</li>
+              <li>데이터 이관 계획 (기존 시스템 데이터)</li>
+            </ul>
+          </div>
+          <div class="guide-card toc-section-anchor" id="guide-5">
+            <div class="guide-step">5</div>
+            <div class="guide-card-title">요구사항 검토 및 확정</div>
+            <div class="guide-card-desc">작성된 요구사항을 이해관계자와 함께 검토하여 누락·모호·충돌 항목을 보완합니다. 확정 후 기준선(Baseline)으로 관리합니다.</div>
+            <ul class="guide-list">
+              <li>요구사항 품질 기준: 완전성·일관성·추적성</li>
+              <li>이해관계자 검토 회의 진행</li>
+              <li>요구사항 식별자 부여 및 추적 매트릭스 작성</li>
+              <li>변경 관리 절차 수립</li>
+            </ul>
+          </div>
+          <div class="guide-card toc-section-anchor" id="guide-6">
+            <div class="guide-step">6</div>
+            <div class="guide-card-title">작성 시 주의사항</div>
+            <div class="guide-card-desc">요구사항 작성에서 흔히 발생하는 오류 유형과 예방 방법입니다.</div>
+            <ul class="guide-list">
+              <li>모호한 표현 금지: "빠르게" → "3초 이내"</li>
+              <li>복합 요구사항 분리: 하나의 항목에 하나의 요건</li>
+              <li>구현 방법 미지정: 무엇을(WHAT), 어떻게는 수주사</li>
+              <li>우선순위 부여: 필수(Must)/권장(Should)/선택(May)</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -2302,21 +2437,37 @@
   <!-- ══════════════════════════════════
        체크리스트 페이지
   ══════════════════════════════════ -->
-  <section class="page" id="page-checklist">
-    <div class="section-wrap">
-      <h2 class="section-title">✅ 체크리스트</h2>
-      <div class="checklist-progress" id="checklistProgress">
-        <div class="progress-label">
-          <span>전체 진행률</span>
-          <span id="progressText">0 / 0</span>
-        </div>
-        <div class="progress-bar-bg">
-          <div class="progress-bar" id="progressBar" style="width:0%"></div>
-        </div>
+  <section class="page page-toc-layout" id="page-checklist">
+    <div class="page-toc-sidebar">
+      <div class="page-toc-header">
+        <div class="page-toc-page-title">✅ 체크리스트</div>
       </div>
-      <br>
-      <div class="checklist-wrap" id="checklistWrap">
-        <!-- JS로 렌더링 -->
+      <div class="page-toc-label">목차</div>
+      <nav class="page-toc-nav">
+        <button class="page-toc-item active" data-target="chk-cat-0">📋 기능 요구사항</button>
+        <button class="page-toc-item" data-target="chk-cat-1">⚡ 성능 요구사항</button>
+        <button class="page-toc-item" data-target="chk-cat-2">🖥️ 시스템·인프라</button>
+        <button class="page-toc-item" data-target="chk-cat-3">🔗 인터페이스·데이터</button>
+        <button class="page-toc-item" data-target="chk-cat-4">✅ 검토 및 확정</button>
+        <button class="page-toc-item" data-target="chk-cat-5">📝 품질 점검</button>
+      </nav>
+    </div>
+    <div class="page-content-main">
+      <div class="section-wrap">
+        <h2 class="section-title">✅ 체크리스트</h2>
+        <div class="checklist-progress" id="checklistProgress">
+          <div class="progress-label">
+            <span>전체 진행률</span>
+            <span id="progressText">0 / 0</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar" id="progressBar" style="width:0%"></div>
+          </div>
+        </div>
+        <br>
+        <div class="checklist-wrap" id="checklistWrap">
+          <!-- JS로 렌더링 -->
+        </div>
       </div>
     </div>
   </section>
@@ -2452,39 +2603,52 @@
   <!-- ══════════════════════════════════
        게시판 페이지
   ══════════════════════════════════ -->
-  <section class="page" id="page-board">
-    <div class="section-wrap">
-      <h2 class="section-title">📋 게시판</h2>
-
-      <div class="board-tabs" role="tablist">
-        <button class="board-tab tab-notice active" data-tab="notice" role="tab">
-          📢 공지사항<span class="board-tab-badge" id="badge-notice">-</span>
-        </button>
-        <button class="board-tab tab-qna" data-tab="qna" role="tab">
-          💬 Q&amp;A<span class="board-tab-badge" id="badge-qna">-</span>
-        </button>
-        <button class="board-tab tab-faq" data-tab="faq" role="tab">
-          ❓ FAQ<span class="board-tab-badge" id="badge-faq">-</span>
-        </button>
+  <section class="page page-toc-layout" id="page-board">
+    <div class="page-toc-sidebar">
+      <div class="page-toc-header">
+        <div class="page-toc-page-title">📋 게시판</div>
       </div>
+      <div class="page-toc-label">목차</div>
+      <nav class="page-toc-nav">
+        <button class="page-toc-item active" data-board-tab="notice">📢 공지사항</button>
+        <button class="page-toc-item" data-board-tab="qna">💬 Q&amp;A</button>
+        <button class="page-toc-item" data-board-tab="faq">❓ FAQ</button>
+      </nav>
+    </div>
+    <div class="page-content-main">
+      <div class="section-wrap">
+        <h2 class="section-title">📋 게시판</h2>
 
-      <div class="board-toolbar">
-        <span class="board-count" id="boardCount"></span>
-        <button class="btn-primary" id="btnWrite" style="display:none">✏️ 글쓰기</button>
+        <div class="board-tabs" role="tablist">
+          <button class="board-tab tab-notice active" data-tab="notice" role="tab">
+            📢 공지사항<span class="board-tab-badge" id="badge-notice">-</span>
+          </button>
+          <button class="board-tab tab-qna" data-tab="qna" role="tab">
+            💬 Q&amp;A<span class="board-tab-badge" id="badge-qna">-</span>
+          </button>
+          <button class="board-tab tab-faq" data-tab="faq" role="tab">
+            ❓ FAQ<span class="board-tab-badge" id="badge-faq">-</span>
+          </button>
+        </div>
+
+        <div class="board-toolbar">
+          <span class="board-count" id="boardCount"></span>
+          <button class="btn-primary" id="btnWrite" style="display:none">✏️ 글쓰기</button>
+        </div>
+        <table class="board-table" id="boardTable">
+          <thead>
+            <tr>
+              <th style="width:50px">번호</th>
+              <th>제목</th>
+              <th style="width:110px">작성일</th>
+              <th style="width:70px">조회</th>
+            </tr>
+          </thead>
+          <tbody id="boardBody">
+            <tr><td colspan="4" class="board-loading">데이터를 불러오는 중...</td></tr>
+          </tbody>
+        </table>
       </div>
-      <table class="board-table" id="boardTable">
-        <thead>
-          <tr>
-            <th style="width:50px">번호</th>
-            <th>제목</th>
-            <th style="width:110px">작성일</th>
-            <th style="width:70px">조회</th>
-          </tr>
-        </thead>
-        <tbody id="boardBody">
-          <tr><td colspan="4" class="board-loading">데이터를 불러오는 중...</td></tr>
-        </tbody>
-      </table>
     </div>
   </section>
 
@@ -3147,7 +3311,8 @@ REQ-DATA-020 백업 및 보존 정책
 
       checklistData.forEach((cat, ci) => {
         const card = document.createElement('div');
-        card.className = 'checklist-card';
+        card.className = 'checklist-card toc-section-anchor';
+        card.id = 'chk-cat-' + ci;
         card.innerHTML = '<div class="checklist-card-title">' + cat.title + '</div>';
 
         cat.items.forEach((item, ii) => {
@@ -4337,6 +4502,59 @@ ${prop}
 
       sendMessage(evalPrompt);
     });
+
+    // ─── 목차(TOC) 사이드바 네비게이션 ───
+    (function initTOC() {
+      // 스크롤 앵커 클릭: page-content-main 내에서 해당 섹션으로 이동
+      document.querySelectorAll('.page-toc-item[data-target]').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const targetEl = document.getElementById(this.dataset.target);
+          if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          this.closest('.page-toc-nav').querySelectorAll('.page-toc-item')
+            .forEach(i => i.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
+
+      // 게시판 탭 전환 클릭
+      document.querySelectorAll('.page-toc-item[data-board-tab]').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const tabBtn = document.querySelector(`.board-tab[data-tab="${this.dataset.boardTab}"]`);
+          if (tabBtn) tabBtn.click();
+          this.closest('.page-toc-nav').querySelectorAll('.page-toc-item')
+            .forEach(i => i.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
+
+      // 게시판 탭 직접 클릭 시 TOC 동기화
+      document.querySelectorAll('.board-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+          const name = this.dataset.tab;
+          document.querySelectorAll('.page-toc-item[data-board-tab]').forEach(item => {
+            item.classList.toggle('active', item.dataset.boardTab === name);
+          });
+        });
+      });
+
+      // 스크롤 스파이: 스크롤 위치에 따라 TOC 항목 활성화
+      document.querySelectorAll('.page-content-main').forEach(container => {
+        container.addEventListener('scroll', function() {
+          const page = this.closest('.page');
+          if (!page) return;
+          const tocItems = page.querySelectorAll('.page-toc-item[data-target]');
+          if (!tocItems.length) return;
+          const containerTop = this.getBoundingClientRect().top;
+          let current = tocItems[0];
+          tocItems.forEach(item => {
+            const el = document.getElementById(item.dataset.target);
+            if (el && el.getBoundingClientRect().top <= containerTop + 100) current = item;
+          });
+          tocItems.forEach(i => i.classList.remove('active'));
+          current.classList.add('active');
+        });
+      });
+    })();
 
   </script>
 
