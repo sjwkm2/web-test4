@@ -1179,9 +1179,14 @@
        AI 검색 네비 아이콘
     ══════════════════════════════════ */
     .nav-item-ai {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 6px;
+      justify-content: center;
+      gap: 4px;
+      flex: none !important;
+      padding: 5px 10px !important;
+      font-size: 0.78rem !important;
+      margin-left: 8px;
       background: linear-gradient(135deg, rgba(27,42,74,0.06) 0%, rgba(61,111,224,0.08) 100%) !important;
       border: 1px solid rgba(61,111,224,0.2) !important;
       color: var(--accent) !important;
@@ -1196,7 +1201,7 @@
       color: #fff !important;
       border-color: transparent !important;
     }
-    .nav-android-icon { width: 16px; height: 16px; flex-shrink: 0; }
+    .nav-android-icon { width: 13px; height: 13px; flex-shrink: 0; }
 
     /* ══════════════════════════════════
        AI 검색 페이지 레이아웃
