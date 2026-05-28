@@ -2092,6 +2092,18 @@
       background: var(--accent-lt);
       font-weight: 600;
     }
+    /* 2단계 목차: 대분류(parent) / 세분류(child) */
+    .page-toc-parent {
+      font-size: 0.8rem; font-weight: 700; color: var(--text);
+      margin-top: 4px; padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+    .page-toc-nav > .page-toc-parent:first-child { border-top: none; margin-top: 0; }
+    .page-toc-child {
+      padding-left: 20px; font-size: 0.75rem;
+      color: var(--muted); font-weight: 400;
+    }
+    .page-toc-child.active { font-weight: 600; }
     .page-content-main {
       flex: 1;
       overflow-y: auto;
@@ -2203,6 +2215,7 @@
         width: auto;
       }
       .page-toc-item.active { border-bottom-color: var(--accent) !important; background: var(--accent-lt); }
+      .page-toc-child { display: none; }
       .page-content-main { overflow: visible; height: auto; }
     }
   </style>
@@ -2393,11 +2406,25 @@
       </div>
       <div class="page-toc-label">목차</div>
       <nav class="page-toc-nav">
-        <button class="page-toc-item active" data-target="req-func">🔧 기능 요구사항</button>
-        <button class="page-toc-item" data-target="req-perf">⚡ 성능 요구사항</button>
-        <button class="page-toc-item" data-target="req-sys">🖥️ 시스템장비구성</button>
-        <button class="page-toc-item" data-target="req-if">🔗 인터페이스 요구사항</button>
-        <button class="page-toc-item" data-target="req-data">🗃️ 데이터 요구사항</button>
+        <button class="page-toc-item page-toc-parent active" data-target="req-func">🔧 기능 요구사항</button>
+        <button class="page-toc-item page-toc-child" data-target="req-d-기능-사용자관리">사용자 관리</button>
+        <button class="page-toc-item page-toc-child" data-target="req-d-기능-데이터처리">데이터 처리</button>
+        <button class="page-toc-item page-toc-child" data-target="req-d-기능-보고서출력">보고서·출력</button>
+        <button class="page-toc-item page-toc-parent" data-target="req-perf">⚡ 성능 요구사항</button>
+        <button class="page-toc-item page-toc-child" data-target="req-d-성능-응답시간">응답 시간</button>
+        <button class="page-toc-item page-toc-child" data-target="req-d-성능-처리용량">처리 용량</button>
+        <button class="page-toc-item page-toc-child" data-target="req-d-성능-가용성">가용성</button>
+        <button class="page-toc-item page-toc-parent" data-target="req-sys">🖥️ 시스템장비구성</button>
+        <button class="page-toc-item page-toc-child" data-target="req-d-시스템-서버">서버 구성</button>
+        <button class="page-toc-item page-toc-child" data-target="req-d-시스템-네트워크">네트워크</button>
+        <button class="page-toc-item page-toc-child" data-target="req-d-시스템-보안">보안 장비</button>
+        <button class="page-toc-item page-toc-parent" data-target="req-if">🔗 인터페이스 요구사항</button>
+        <button class="page-toc-item page-toc-child" data-target="req-d-인터페이스-외부연계">외부 시스템 연계</button>
+        <button class="page-toc-item page-toc-child" data-target="req-d-인터페이스-표준">표준 프로토콜</button>
+        <button class="page-toc-item page-toc-parent" data-target="req-data">🗃️ 데이터 요구사항</button>
+        <button class="page-toc-item page-toc-child" data-target="req-d-데이터-표준">데이터 표준</button>
+        <button class="page-toc-item page-toc-child" data-target="req-d-데이터-품질">품질 관리</button>
+        <button class="page-toc-item page-toc-child" data-target="req-d-데이터-보존">보존·백업</button>
       </nav>
     </div>
     <div class="page-content-main">
@@ -3515,7 +3542,8 @@ REQ-DATA-020 백업 및 보존 정책
           const r = reqData[key];
           if (!r) return;
           const card = document.createElement('div');
-          card.className = 'req-detail-card';
+          card.className = 'req-detail-card toc-section-anchor';
+          card.id = 'req-d-' + key.replace('_', '-');
           card.innerHTML =
             '<div class="req-detail-header">' +
               '<span class="req-detail-badge badge-' + r.category + '">' + escHtml(r.label) + '</span>' +
