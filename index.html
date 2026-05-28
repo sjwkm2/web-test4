@@ -2023,6 +2023,77 @@
     .page.page-toc-layout .guide-grid { grid-template-columns: 1fr; }
     .page.page-toc-layout .checklist-wrap { grid-template-columns: 1fr; }
     .toc-section-anchor { scroll-margin-top: 20px; }
+
+    /* req-cat → 섹션 래퍼로 전환 (TOC 레이아웃에서) */
+    .page.page-toc-layout .req-cat {
+      background: none; border: none; border-radius: 0;
+      padding: 0; box-shadow: none;
+    }
+    .page.page-toc-layout .req-cat-label {
+      font-size: 1.05rem; font-weight: 800;
+      color: var(--text); padding: 0 0 14px;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 0;
+      display: flex; align-items: center; gap: 8px;
+    }
+    /* 인라인 상세 카드 */
+    .req-detail-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 22px 24px;
+      margin-top: 14px; box-shadow: var(--shadow-sm);
+    }
+    .req-detail-card:hover { box-shadow: var(--shadow-md); }
+    .req-detail-header {
+      display: flex; align-items: center; gap: 9px; margin-bottom: 10px;
+    }
+    .req-detail-badge {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.03em;
+      padding: 3px 9px; border-radius: var(--radius-full);
+      flex-shrink: 0;
+    }
+    .badge-func  { background: #EFF6FF; color: #1d4ed8; }
+    .badge-perf  { background: #FFF7ED; color: #c2410c; }
+    .badge-sys   { background: #F0FDF4; color: #15803d; }
+    .badge-iface { background: #FAF5FF; color: #7e22ce; }
+    .badge-data  { background: #FFFBEB; color: #b45309; }
+    [data-theme="dark"] .badge-func  { background: #1e3a5f; color: #93c5fd; }
+    [data-theme="dark"] .badge-perf  { background: #431407; color: #fdba74; }
+    [data-theme="dark"] .badge-sys   { background: #14532d; color: #86efac; }
+    [data-theme="dark"] .badge-iface { background: #3b0764; color: #d8b4fe; }
+    [data-theme="dark"] .badge-data  { background: #451a03; color: #fde68a; }
+    .req-detail-title {
+      font-size: 0.93rem; font-weight: 700; color: var(--text);
+      letter-spacing: -0.01em;
+    }
+    .req-detail-desc {
+      font-size: 0.83rem; color: var(--muted); line-height: 1.75;
+      margin-bottom: 14px;
+    }
+    .req-detail-sub {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.07em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+    }
+    .req-detail-sub + .req-detail-sub { margin-top: 14px; }
+    .req-detail-checks {
+      list-style: none; display: flex; flex-direction: column; gap: 5px;
+      margin-bottom: 0;
+    }
+    .req-detail-checks li {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 0.82rem; color: var(--text); line-height: 1.5;
+    }
+    .req-detail-checks li::before {
+      content: '✓'; color: #3D6FE0; font-weight: 700;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .req-detail-example {
+      background: var(--subtle); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 14px 16px;
+      font-size: 0.76rem; font-family: 'Consolas','Monaco',monospace;
+      line-height: 1.7; color: var(--text);
+      white-space: pre-wrap; word-break: break-word;
+      margin-top: 8px;
+    }
     @media (max-width: 840px) {
       .page.page-toc-layout.active {
         flex-direction: column;
@@ -2253,88 +2324,18 @@
         <div class="req-grid">
           <div class="req-cat toc-section-anchor" id="req-func">
             <div class="req-cat-label">🔧 기능 요구사항</div>
-            <div class="req-row" data-req="기능_사용자관리">
-              <span class="req-row-icon">👤</span>
-              <div><div class="req-row-name">사용자 관리</div><div class="req-row-hint">인증·권한·계정 관리</div></div>
-              <span class="req-arrow">›</span>
-            </div>
-            <div class="req-row" data-req="기능_데이터처리">
-              <span class="req-row-icon">⚙️</span>
-              <div><div class="req-row-name">데이터 처리</div><div class="req-row-hint">입력·조회·수정·삭제</div></div>
-              <span class="req-arrow">›</span>
-            </div>
-            <div class="req-row" data-req="기능_보고서출력">
-              <span class="req-row-icon">📄</span>
-              <div><div class="req-row-name">보고서·출력</div><div class="req-row-hint">통계·출력·내보내기</div></div>
-              <span class="req-arrow">›</span>
-            </div>
           </div>
           <div class="req-cat toc-section-anchor" id="req-perf">
             <div class="req-cat-label">⚡ 성능 요구사항</div>
-            <div class="req-row" data-req="성능_응답시간">
-              <span class="req-row-icon">⏱️</span>
-              <div><div class="req-row-name">응답 시간</div><div class="req-row-hint">화면·트랜잭션 처리 속도</div></div>
-              <span class="req-arrow">›</span>
-            </div>
-            <div class="req-row" data-req="성능_처리용량">
-              <span class="req-row-icon">📊</span>
-              <div><div class="req-row-name">처리 용량</div><div class="req-row-hint">동시사용자·TPS 기준</div></div>
-              <span class="req-arrow">›</span>
-            </div>
-            <div class="req-row" data-req="성능_가용성">
-              <span class="req-row-icon">🔄</span>
-              <div><div class="req-row-name">가용성</div><div class="req-row-hint">SLA·장애 복구 시간</div></div>
-              <span class="req-arrow">›</span>
-            </div>
           </div>
           <div class="req-cat toc-section-anchor" id="req-sys">
             <div class="req-cat-label">🖥️ 시스템장비구성</div>
-            <div class="req-row" data-req="시스템_서버">
-              <span class="req-row-icon">🗄️</span>
-              <div><div class="req-row-name">서버 구성</div><div class="req-row-hint">웹·WAS·DB 서버 사양</div></div>
-              <span class="req-arrow">›</span>
-            </div>
-            <div class="req-row" data-req="시스템_네트워크">
-              <span class="req-row-icon">🌐</span>
-              <div><div class="req-row-name">네트워크</div><div class="req-row-hint">대역폭·보안 장비</div></div>
-              <span class="req-arrow">›</span>
-            </div>
-            <div class="req-row" data-req="시스템_보안">
-              <span class="req-row-icon">🔒</span>
-              <div><div class="req-row-name">보안 장비</div><div class="req-row-hint">방화벽·IPS·백신</div></div>
-              <span class="req-arrow">›</span>
-            </div>
           </div>
           <div class="req-cat toc-section-anchor" id="req-if">
             <div class="req-cat-label">🔗 인터페이스 요구사항</div>
-            <div class="req-row" data-req="인터페이스_외부연계">
-              <span class="req-row-icon">🔌</span>
-              <div><div class="req-row-name">외부 시스템 연계</div><div class="req-row-hint">API·전문·파일 연동</div></div>
-              <span class="req-arrow">›</span>
-            </div>
-            <div class="req-row" data-req="인터페이스_표준">
-              <span class="req-row-icon">📡</span>
-              <div><div class="req-row-name">표준 프로토콜</div><div class="req-row-hint">REST·SOAP·전자정부</div></div>
-              <span class="req-arrow">›</span>
-            </div>
           </div>
           <div class="req-cat toc-section-anchor" id="req-data">
             <div class="req-cat-label">🗃️ 데이터 요구사항</div>
-            <div class="req-row" data-req="데이터_표준">
-              <span class="req-row-icon">📋</span>
-              <div><div class="req-row-name">데이터 표준</div><div class="req-row-hint">코드·용어·형식 표준</div></div>
-              <span class="req-arrow">›</span>
-            </div>
-            <div class="req-row" data-req="데이터_품질">
-              <span class="req-row-icon">✅</span>
-              <div><div class="req-row-name">품질 관리</div><div class="req-row-hint">정확성·완전성·유효성</div></div>
-              <span class="req-arrow">›</span>
-            </div>
-            <div class="req-row" data-req="데이터_보존">
-              <span class="req-row-icon">💾</span>
-              <div><div class="req-row-name">보존·백업</div><div class="req-row-hint">보존기간·백업 정책</div></div>
-              <span class="req-arrow">›</span>
-            </div>
           </div>
         </div>
       </div>
@@ -3341,6 +3342,40 @@ REQ-DATA-020 백업 및 보존 정책
     }
 
     renderChecklist();
+
+    /* ── 요구사항 영역 인라인 카드 렌더링 ── */
+    (function renderReqCards() {
+      const groups = {
+        'req-func': ['기능_사용자관리', '기능_데이터처리', '기능_보고서출력'],
+        'req-perf': ['성능_응답시간', '성능_처리용량', '성능_가용성'],
+        'req-sys':  ['시스템_서버', '시스템_네트워크', '시스템_보안'],
+        'req-if':   ['인터페이스_외부연계', '인터페이스_표준'],
+        'req-data': ['데이터_표준', '데이터_품질', '데이터_보존']
+      };
+      Object.entries(groups).forEach(([catId, keys]) => {
+        const catEl = document.getElementById(catId);
+        if (!catEl) return;
+        keys.forEach(key => {
+          const r = reqData[key];
+          if (!r) return;
+          const card = document.createElement('div');
+          card.className = 'req-detail-card';
+          card.innerHTML =
+            '<div class="req-detail-header">' +
+              '<span class="req-detail-badge badge-' + r.category + '">' + escHtml(r.label) + '</span>' +
+              '<span class="req-detail-title">' + escHtml(r.title) + '</span>' +
+            '</div>' +
+            '<p class="req-detail-desc">' + escHtml(r.desc) + '</p>' +
+            '<div class="req-detail-sub">작성 체크리스트</div>' +
+            '<ul class="req-detail-checks">' +
+              r.checks.map(c => '<li>' + escHtml(c) + '</li>').join('') +
+            '</ul>' +
+            '<div class="req-detail-sub" style="margin-top:16px">작성 예시</div>' +
+            '<pre class="req-detail-example">' + escHtml(r.example) + '</pre>';
+          catEl.appendChild(card);
+        });
+      });
+    })();
 
     /* ── 6. 게시판 (Supabase 연동) ── */
     let currentTab = 'notice';
