@@ -1184,22 +1184,25 @@
       justify-content: center;
       gap: 4px;
       flex: none !important;
-      padding: 5px 10px !important;
+      padding: 5px 11px !important;
       font-size: 0.78rem !important;
       margin-left: 8px;
-      background: linear-gradient(135deg, rgba(27,42,74,0.06) 0%, rgba(61,111,224,0.08) 100%) !important;
-      border: 1px solid rgba(61,111,224,0.2) !important;
-      color: var(--accent) !important;
+      background: #3D6FE0 !important;
+      border: 1px solid #2d5bc8 !important;
+      color: #fff !important;
       font-weight: 700 !important;
+      border-radius: var(--radius-sm);
     }
     .nav-item-ai:hover {
-      background: linear-gradient(135deg, rgba(27,42,74,0.12) 0%, rgba(61,111,224,0.15) 100%) !important;
-      border-color: rgba(61,111,224,0.4) !important;
+      background: #2d5bc8 !important;
+      border-color: #1e4baa !important;
+      transform: translateY(-1px);
+      box-shadow: 0 3px 10px rgba(61,111,224,0.35);
     }
     .nav-item-ai.active {
-      background: var(--primary-gradient) !important;
+      background: #1B2A4A !important;
       color: #fff !important;
-      border-color: transparent !important;
+      border-color: #1B2A4A !important;
     }
     .nav-android-icon { width: 13px; height: 13px; flex-shrink: 0; }
 
@@ -1591,8 +1594,9 @@
       margin-left: auto;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
       flex-shrink: 0;
+      padding-left: 12px;
     }
 
     .api-status-dot {
