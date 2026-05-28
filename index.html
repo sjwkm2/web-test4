@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -1058,6 +1059,894 @@
       .topbar-sep, .topbar-left .topbar-tag:nth-child(3) { display: none; }
       .section-wrap { padding: 32px 16px; }
     }
+
+    /* ══════════════════════════════════
+       AI 검색 네비 아이콘
+    ══════════════════════════════════ */
+    .nav-item-ai {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, rgba(27,42,74,0.06) 0%, rgba(61,111,224,0.08) 100%) !important;
+      border: 1px solid rgba(61,111,224,0.2) !important;
+      color: var(--accent) !important;
+      font-weight: 700 !important;
+    }
+    .nav-item-ai:hover {
+      background: linear-gradient(135deg, rgba(27,42,74,0.12) 0%, rgba(61,111,224,0.15) 100%) !important;
+      border-color: rgba(61,111,224,0.4) !important;
+    }
+    .nav-item-ai.active {
+      background: var(--primary-gradient) !important;
+      color: #fff !important;
+      border-color: transparent !important;
+    }
+    .nav-android-icon { width: 16px; height: 16px; flex-shrink: 0; }
+
+    /* ══════════════════════════════════
+       AI 검색 페이지 레이아웃
+    ══════════════════════════════════ */
+    #page-ai { display: none; }
+    #page-ai.active {
+      display: flex !important;
+      height: calc(100vh - var(--total-nav));
+      animation: pageIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+
+    .ai-layout { display: flex; height: 100%; width: 100%; overflow: hidden; }
+
+    /* ── AI 사이드바 */
+    .ai-sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .ai-sidebar-header {
+      padding: 16px 16px 12px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .ai-sidebar-title {
+      font-size: 0.67rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 10px;
+    }
+
+    .ai-new-chat-btn {
+      width: 100%;
+      background: var(--primary-gradient);
+      border: none;
+      border-radius: var(--radius-sm);
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: var(--transition-base);
+    }
+
+    .ai-new-chat-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    .ai-sidebar-section {
+      padding: 12px 16px 6px;
+      flex-shrink: 0;
+    }
+
+    .ai-sidebar-section-label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .ai-topic-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      padding: 7px 10px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--muted);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: inherit;
+      transition: var(--transition-base);
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .ai-topic-btn:hover { background: var(--accent-lt); color: var(--text); }
+    .ai-topic-btn.active { background: var(--accent-lt); color: var(--accent); font-weight: 700; }
+
+    .ai-topics-scroll {
+      overflow-y: auto;
+      flex: 1;
+      padding: 0 10px 16px;
+    }
+
+    /* ── AI 메인 영역 */
+    .ai-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .ai-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* ── 웰컴 화면 */
+    .ai-welcome {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      text-align: center;
+      padding: 40px 20px;
+      gap: 16px;
+      min-height: 300px;
+    }
+
+    .ai-welcome-icon {
+      width: 72px; height: 72px;
+      background: var(--primary-gradient);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(27,42,74,0.25);
+    }
+
+    .ai-welcome-icon svg { width: 40px; height: 40px; fill: white; }
+
+    .ai-welcome h2 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.03em;
+    }
+
+    .ai-welcome p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.7;
+    }
+
+    .ai-quick-topics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      max-width: 540px;
+      margin-top: 8px;
+    }
+
+    .ai-quick-chip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 6px 14px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      transition: var(--transition-base);
+      font-family: inherit;
+    }
+
+    .ai-quick-chip:hover {
+      background: var(--accent-lt);
+      color: var(--accent);
+      border-color: var(--border2);
+    }
+
+    /* ── 채팅 메시지 버블 */
+    .ai-msg { display: flex; gap: 12px; align-items: flex-start; }
+    .ai-msg.user { flex-direction: row-reverse; }
+
+    .ai-msg-avatar {
+      width: 34px; height: 34px;
+      border-radius: var(--radius-sm);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+
+    .ai-msg.bot .ai-msg-avatar {
+      background: var(--primary-gradient);
+      color: #fff;
+    }
+
+    .ai-msg.user .ai-msg-avatar {
+      background: var(--subtle);
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .ai-msg-bubble {
+      max-width: 75%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 14px 18px;
+      box-shadow: var(--shadow-sm);
+      font-size: 0.875rem;
+      line-height: 1.75;
+      color: var(--text);
+    }
+
+    .ai-msg.user .ai-msg-bubble {
+      background: var(--accent);
+      border-color: transparent;
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+
+    .ai-msg.bot .ai-msg-bubble { border-bottom-left-radius: 4px; }
+
+    /* ── AI 응답 내부 스타일 */
+    .ai-resp-section { margin-bottom: 16px; }
+    .ai-resp-section:last-child { margin-bottom: 0; }
+
+    .ai-resp-section h4 {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ai-resp-section p { font-size: 0.85rem; color: var(--text); line-height: 1.75; margin-bottom: 8px; }
+    .ai-resp-section p:last-child { margin-bottom: 0; }
+
+    .ai-resp-section ul { padding-left: 18px; margin: 0; }
+    .ai-resp-section ul li { font-size: 0.85rem; color: var(--text); line-height: 1.75; margin-bottom: 4px; }
+
+    .ai-doc-preview {
+      background: #0F1B33;
+      border: 1px solid #1B2A4A;
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      font-family: 'D2Coding', 'Fira Code', monospace;
+      font-size: 0.76rem;
+      line-height: 1.7;
+      color: #e2e8f0;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin-top: 6px;
+      max-height: 240px;
+      overflow-y: auto;
+    }
+
+    [data-theme="dark"] .ai-doc-preview { background: #0A1428; border-color: #2D3548; }
+
+    .ai-example-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      margin-top: 6px;
+    }
+
+    .ai-example-table th {
+      background: var(--subtle);
+      border: 1px solid var(--border);
+      padding: 7px 10px;
+      font-weight: 700;
+      color: var(--muted);
+      font-size: 0.72rem;
+      text-align: left;
+    }
+
+    .ai-example-table td {
+      border: 1px solid var(--border);
+      padding: 7px 10px;
+      color: var(--text);
+      vertical-align: top;
+    }
+
+    .ai-example-table tr:hover td { background: var(--accent-lt); }
+
+    .priority-required { background: #d1fae5; color: #065f46; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
+    .priority-recommend { background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
+    .priority-optional { background: #e0e7ff; color: #3730a3; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
+
+    [data-theme="dark"] .priority-required { background: #072a1a; color: #6ee7b7; }
+    [data-theme="dark"] .priority-recommend { background: #3d2a00; color: #fcd34d; }
+    [data-theme="dark"] .priority-optional { background: #1e1b4b; color: #a5b4fc; }
+
+    /* ── 산출물 생성 버튼 */
+    .ai-resp-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .ai-doc-btn {
+      background: var(--subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 6px 14px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      font-family: inherit;
+      transition: var(--transition-base);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .ai-doc-btn:hover { background: var(--accent-lt); color: var(--accent); border-color: var(--border2); transform: translateY(-1px); }
+    .ai-doc-btn.doc { border-color: #bfdbfe; }
+    .ai-doc-btn.doc:hover { background: #eff6ff; color: #1d4ed8; }
+    .ai-doc-btn.ppt { border-color: #fde68a; }
+    .ai-doc-btn.ppt:hover { background: #fffbeb; color: #d97706; }
+    .ai-doc-btn.svg-btn { border-color: #d9f99d; }
+    .ai-doc-btn.svg-btn:hover { background: #f7fee7; color: #65a30d; }
+    .ai-compare-btn {
+      background: linear-gradient(135deg, rgba(27,42,74,0.08) 0%, rgba(61,111,224,0.10) 100%);
+      border: 1px solid rgba(61,111,224,0.3);
+      border-radius: var(--radius-sm);
+      padding: 6px 14px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      cursor: pointer;
+      font-family: inherit;
+      transition: var(--transition-base);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .ai-compare-btn:hover { background: var(--primary-gradient); color: #fff; border-color: transparent; transform: translateY(-1px); }
+
+    [data-theme="dark"] .ai-doc-btn.doc:hover { background: #1e3a5f; color: #93c5fd; }
+    [data-theme="dark"] .ai-doc-btn.ppt:hover { background: #3d2a00; color: #fcd34d; }
+    [data-theme="dark"] .ai-doc-btn.svg-btn:hover { background: #14290a; color: #86efac; }
+
+    /* ── 타이핑 인디케이터 */
+    .ai-typing { display: flex; align-items: center; gap: 10px; }
+
+    .ai-typing-dots {
+      display: flex;
+      gap: 5px;
+      padding: 12px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      border-bottom-left-radius: 4px;
+    }
+
+    .ai-typing-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--navy-300);
+      animation: typingBounce 1.2s ease-in-out infinite;
+    }
+
+    .ai-typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .ai-typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typingBounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+      30% { transform: translateY(-6px); opacity: 1; }
+    }
+
+    /* ── 이미지 첨부 프리뷰 */
+    .ai-img-preview {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: var(--subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      margin-bottom: 8px;
+    }
+
+    .ai-img-preview img { width: 48px; height: 48px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); }
+    .ai-img-preview-name { font-size: 0.8rem; color: var(--text); font-weight: 500; flex: 1; }
+    .ai-img-remove { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; line-height: 1; padding: 2px; transition: color 0.2s; }
+    .ai-img-remove:hover { color: #dc2626; }
+
+    /* ── 입력 영역 */
+    .ai-input-area {
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      padding: 16px 28px 20px;
+      flex-shrink: 0;
+    }
+
+    .ai-input-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      background: var(--subtle);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 10px 14px;
+      transition: var(--transition-base);
+    }
+
+    .ai-input-row:focus-within {
+      border-color: var(--accent);
+      background: var(--surface);
+      box-shadow: 0 0 0 3px rgba(27,42,74,0.08);
+    }
+
+    [data-theme="dark"] .ai-input-row:focus-within {
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+    }
+
+    .ai-attach-label {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 1.1rem;
+      padding: 4px;
+      line-height: 1;
+      transition: color 0.2s;
+      flex-shrink: 0;
+    }
+
+    .ai-attach-label:hover { color: var(--accent); }
+
+    #aiPrompt {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 0.9rem;
+      color: var(--text);
+      font-family: inherit;
+      resize: none;
+      outline: none;
+      line-height: 1.6;
+      min-height: 40px;
+      max-height: 140px;
+      overflow-y: auto;
+    }
+
+    #aiPrompt::placeholder { color: var(--navy-400); }
+
+    .ai-send-btn {
+      background: var(--primary-gradient);
+      border: none;
+      border-radius: var(--radius-sm);
+      width: 36px; height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: var(--transition-base);
+      opacity: 0.5;
+    }
+
+    .ai-send-btn.ready { opacity: 1; }
+    .ai-send-btn:hover.ready { transform: scale(1.08); box-shadow: 0 4px 12px rgba(27,42,74,0.3); }
+
+    .ai-send-btn svg { width: 16px; height: 16px; fill: white; }
+
+    .ai-input-hint {
+      font-size: 0.68rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    /* ── 비교분석 모달 */
+    .compare-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10,20,40,0.6);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 500;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+    }
+
+    .compare-overlay.open { opacity: 1; pointer-events: all; }
+
+    .compare-modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      width: 100%;
+      max-width: 860px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-xl);
+      transform: translateY(24px) scale(0.97);
+      opacity: 0;
+      transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), opacity 0.25s;
+      overflow: hidden;
+    }
+
+    .compare-overlay.open .compare-modal { transform: translateY(0) scale(1); opacity: 1; }
+
+    .compare-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .compare-modal-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .compare-modal-body { overflow-y: auto; padding: 20px 24px; flex: 1; }
+
+    .compare-score-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 20px;
+      margin-bottom: 20px;
+    }
+
+    .compare-score-circle {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: var(--primary-gradient);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .compare-score-num { font-size: 1.3rem; font-weight: 900; line-height: 1; }
+    .compare-score-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.3px; opacity: 0.85; }
+
+    .compare-score-detail { flex: 1; }
+    .compare-score-title { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .compare-score-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin-bottom: 16px;
+    }
+
+    .compare-table th {
+      background: var(--subtle);
+      border: 1px solid var(--border);
+      padding: 9px 12px;
+      font-weight: 700;
+      color: var(--muted);
+      font-size: 0.72rem;
+      text-align: left;
+      position: sticky;
+      top: 0;
+    }
+
+    .compare-table td {
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      color: var(--text);
+      vertical-align: top;
+      line-height: 1.6;
+    }
+
+    .compare-table tr:hover td { background: var(--accent-lt); }
+
+    .match-full   { color: #065f46; background: #d1fae5; padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; white-space: nowrap; }
+    .match-partial { color: #92400e; background: #fef3c7; padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; white-space: nowrap; }
+    .match-missing { color: #991b1b; background: #fee2e2; padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; white-space: nowrap; }
+
+    [data-theme="dark"] .match-full   { background: #072a1a; color: #6ee7b7; }
+    [data-theme="dark"] .match-partial { background: #3d2a00; color: #fcd34d; }
+    [data-theme="dark"] .match-missing { background: #450a0a; color: #fca5a5; }
+
+    .compare-progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 6px; }
+    .compare-progress-fill { height: 100%; border-radius: 3px; background: var(--primary-gradient); transition: width 0.6s ease; }
+
+    /* ── AI 모바일 반응형 */
+    @media (max-width: 700px) {
+      .ai-sidebar { display: none; }
+      .ai-messages { padding: 16px; }
+      .ai-input-area { padding: 12px 16px 16px; }
+      .ai-msg-bubble { max-width: 90%; }
+      .compare-modal { max-width: 100%; margin: 0; border-radius: var(--radius-lg); }
+    }
+
+    /* ══════════════════════════════════
+       설정 버튼 & API 상태 dot
+    ══════════════════════════════════ */
+    .nav-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .api-status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: var(--transition-base);
+    }
+
+    .api-status-dot.connected    { background: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,0.2); }
+    .api-status-dot.disconnected { background: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,0.2); }
+
+    .nav-settings-btn {
+      background: var(--subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 6px 14px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: var(--transition-base);
+      white-space: nowrap;
+    }
+
+    .nav-settings-btn:hover { background: var(--accent-lt); color: var(--accent); border-color: var(--border2); }
+    .nav-settings-btn.key-set { border-color: rgba(34,197,94,0.35); color: #16a34a; background: rgba(34,197,94,0.07); }
+    [data-theme="dark"] .nav-settings-btn.key-set { color: #4ade80; background: rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.3); }
+
+    /* ══════════════════════════════════
+       설정 모달
+    ══════════════════════════════════ */
+    .settings-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10,20,40,0.55);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 600;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s;
+    }
+
+    .settings-overlay.open { opacity: 1; pointer-events: all; }
+
+    .settings-modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 32px 36px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: var(--shadow-xl);
+      transform: translateY(20px) scale(0.97);
+      opacity: 0;
+      transition: transform 0.28s cubic-bezier(0.22,1,0.36,1), opacity 0.22s;
+    }
+
+    .settings-overlay.open .settings-modal { transform: translateY(0) scale(1); opacity: 1; }
+
+    .settings-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .settings-modal-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.025em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .settings-field { margin-bottom: 18px; }
+
+    .settings-field label {
+      display: block;
+      font-size: 0.67rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 7px;
+    }
+
+    .settings-field select,
+    .settings-field input[type="text"],
+    .settings-field input[type="password"] {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      color: var(--text);
+      font-family: inherit;
+      background: var(--subtle);
+      transition: var(--transition-base);
+    }
+
+    .settings-field select:focus,
+    .settings-field input:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: var(--surface);
+      box-shadow: 0 0 0 3px rgba(27,42,74,0.08);
+    }
+
+    [data-theme="dark"] .settings-field input:focus,
+    [data-theme="dark"] .settings-field select:focus {
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+    }
+
+    .settings-field-hint {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 5px;
+      line-height: 1.5;
+    }
+
+    .settings-key-wrap { position: relative; }
+
+    .settings-key-wrap input { padding-right: 80px; }
+
+    .settings-show-key {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.72rem;
+      color: var(--muted);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .settings-show-key input[type="checkbox"] { cursor: pointer; }
+
+    .settings-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .btn-test {
+      background: var(--subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 9px 18px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      font-family: inherit;
+      transition: var(--transition-base);
+      flex: 1;
+    }
+
+    .btn-test:hover { background: var(--accent-lt); color: var(--accent); border-color: var(--border2); }
+    .btn-test:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ── 마크다운 렌더링 (봇 응답) */
+    .bot-content h1,.bot-content h2,.bot-content h3,.bot-content h4,.bot-content h5 {
+      color: var(--text);
+      font-weight: 700;
+      margin: 14px 0 8px;
+      letter-spacing: -0.02em;
+    }
+    .bot-content h2 { font-size: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+    .bot-content h3 { font-size: 0.92rem; color: var(--accent); }
+    .bot-content h4 { font-size: 0.85rem; color: var(--muted); }
+    .bot-content p  { margin-bottom: 9px; line-height: 1.75; }
+    .bot-content ul,.bot-content ol { padding-left: 20px; margin-bottom: 9px; }
+    .bot-content li { margin-bottom: 5px; line-height: 1.65; }
+    .bot-content pre {
+      background: #0F1B33;
+      color: #e2e8f0;
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+      margin: 10px 0;
+      font-family: 'D2Coding','Fira Code',monospace;
+      font-size: 0.8rem;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    [data-theme="dark"] .bot-content pre { background: #0A1428; }
+    .bot-content code {
+      background: var(--subtle);
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.85em;
+      font-family: 'D2Coding','Fira Code',monospace;
+    }
+    .bot-content pre code { background: none; border: none; padding: 0; font-size: inherit; }
+    .bot-content table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.82rem; }
+    .bot-content th { background: var(--subtle); border: 1px solid var(--border); padding: 7px 10px; font-weight: 700; text-align: left; color: var(--muted); font-size: 0.76rem; }
+    .bot-content td { border: 1px solid var(--border); padding: 7px 10px; vertical-align: top; }
+    .bot-content tr:hover td { background: var(--accent-lt); }
+    .bot-content blockquote { border-left: 3px solid var(--accent); padding: 4px 14px; color: var(--muted); margin: 8px 0; }
+    .bot-content strong { font-weight: 700; color: var(--text); }
+    .bot-content hr { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+
+    /* ── 스트리밍 커서 */
+    .streaming-cursor { display: inline-block; animation: blink 1s step-end infinite; color: var(--accent); }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
   </style>
 </head>
 <body>
@@ -1090,6 +1979,19 @@
       <button class="nav-item" data-page="skills">보유스킬</button>
       <button class="nav-item" data-page="reference">레퍼런스</button>
       <button class="nav-item" data-page="board">게시판</button>
+      <button class="nav-item nav-item-ai" data-page="ai">
+        <svg class="nav-android-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 18c0 .55.45 1 1 1h1v3.5c0 .83.67 1.5 1.5 1.5S11 23.33 11 22.5V19h2v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h1c.55 0 1-.45 1-1V8H6v10zM3.5 8C2.67 8 2 8.67 2 9.5v7c0 .83.67 1.5 1.5 1.5S5 17.33 5 16.5v-7C5 8.67 4.33 8 3.5 8zm17 0c-.83 0-1.5.67-1.5 1.5v7c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-7c0-.83-.67-1.5-1.5-1.5zm-4.97-5.84l1.3-1.3c.2-.2.2-.51 0-.71-.2-.2-.51-.2-.71 0l-1.48 1.48C13.85 1.23 12.95 1 12 1c-.96 0-1.86.23-2.66.63L7.85.15c-.2-.2-.51-.2-.71 0-.2.2-.2.51 0 .71l1.31 1.31C6.97 3.26 6 5.01 6 7h12c0-1.99-.97-3.75-2.47-4.84zM10 5H9V4h1v1zm5 0h-1V4h1v1z"/>
+        </svg>
+        AI 검색
+      </button>
+    </div>
+    <div class="nav-right">
+      <div class="api-status-dot disconnected" id="apiStatusDot" title="API 키 미설정 - 클릭하여 설정" onclick="openSettings()"></div>
+      <button class="nav-settings-btn" id="openSettingsBtn">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+        AI 설정
+      </button>
     </div>
   </nav>
 
@@ -1411,6 +2313,153 @@
       </table>
     </div>
   </section>
+
+  <!-- ══════════════════════════════════
+       AI 검색 페이지
+  ══════════════════════════════════ -->
+  <section class="page" id="page-ai">
+    <div class="ai-layout">
+
+      <!-- 사이드바 -->
+      <div class="ai-sidebar">
+        <div class="ai-sidebar-header">
+          <div class="ai-sidebar-title">공공SW 제안요청서 가이드</div>
+          <button class="ai-new-chat-btn" id="aiNewChat">
+            <svg viewBox="0 0 20 20" fill="white" width="14" height="14"><path d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"/></svg>
+            새 대화
+          </button>
+        </div>
+        <div class="ai-topics-scroll">
+          <div class="ai-sidebar-section">
+            <div class="ai-sidebar-section-label">제안요청서 항목</div>
+            <button class="ai-topic-btn" data-q="사업 배경 및 목적 작성 방법을 알려주세요">📋 사업개요 · 배경 · 목적</button>
+            <button class="ai-topic-btn" data-q="현황 및 문제점 작성 방법을 알려주세요">🔍 현황 및 문제점</button>
+            <button class="ai-topic-btn" data-q="추진목표 및 기대효과 작성 방법을 알려주세요">🎯 추진목표 · 기대효과</button>
+            <button class="ai-topic-btn" data-q="기능 요구사항 작성 방법과 예시를 알려주세요">⚙️ 기능 요구사항</button>
+            <button class="ai-topic-btn" data-q="성능 요구사항 작성 방법을 알려주세요">⚡ 성능 요구사항</button>
+            <button class="ai-topic-btn" data-q="인터페이스 요구사항 작성 방법을 알려주세요">🔗 인터페이스 요구사항</button>
+            <button class="ai-topic-btn" data-q="데이터 요구사항 작성 방법을 알려주세요">🗄️ 데이터 요구사항</button>
+            <button class="ai-topic-btn" data-q="보안 요구사항 작성 방법을 알려주세요">🔒 보안 요구사항</button>
+            <button class="ai-topic-btn" data-q="품질 요구사항 작성 방법을 알려주세요">✅ 품질 요구사항</button>
+            <button class="ai-topic-btn" data-q="제약사항 및 프로젝트 요구사항 작성 방법을 알려주세요">📌 제약사항 · 프로젝트</button>
+          </div>
+          <div class="ai-sidebar-section">
+            <div class="ai-sidebar-section-label">비교분석</div>
+            <button class="ai-topic-btn" data-q="제안요청서와 제안서 비교분석을 해주세요">📊 제안서 심층 비교분석</button>
+            <button class="ai-topic-btn" data-q="요구사항 추적 매트릭스 작성 방법을 알려주세요">🗂️ 요구사항 추적 매트릭스</button>
+          </div>
+          <div class="ai-sidebar-section">
+            <div class="ai-sidebar-section-label">산출물 생성</div>
+            <button class="ai-topic-btn" data-q="제안요청서 전체 템플릿을 만들어주세요">📄 제안요청서 템플릿</button>
+            <button class="ai-topic-btn" data-q="업체 제안서 전체 예시를 만들어주세요">📝 업체 제안서 예시</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 메인 채팅 영역 -->
+      <div class="ai-main">
+        <div class="ai-messages" id="aiMessages">
+          <div class="ai-welcome" id="aiWelcome">
+            <div class="ai-welcome-icon">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 18c0 .55.45 1 1 1h1v3.5c0 .83.67 1.5 1.5 1.5S11 23.33 11 22.5V19h2v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h1c.55 0 1-.45 1-1V8H6v10zM3.5 8C2.67 8 2 8.67 2 9.5v7c0 .83.67 1.5 1.5 1.5S5 17.33 5 16.5v-7C5 8.67 4.33 8 3.5 8zm17 0c-.83 0-1.5.67-1.5 1.5v7c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-7c0-.83-.67-1.5-1.5-1.5zm-4.97-5.84l1.3-1.3c.2-.2.2-.51 0-.71-.2-.2-.51-.2-.71 0l-1.48 1.48C13.85 1.23 12.95 1 12 1c-.96 0-1.86.23-2.66.63L7.85.15c-.2-.2-.51-.2-.71 0-.2.2-.2.51 0 .71l1.31 1.31C6.97 3.26 6 5.01 6 7h12c0-1.99-.97-3.75-2.47-4.84zM10 5H9V4h1v1zm5 0h-1V4h1v1z"/>
+              </svg>
+            </div>
+            <h2>공공SW 제안요청서 AI 가이드</h2>
+            <p>SW산업정보종합시스템(swit.or.kr) 수록 <strong>「공공SW사업 제안요청서 작성을 위한 요구사항 상세화 실무가이드」</strong>를 기반으로 작성 방향, 가이드, 예시, 산출물 생성을 지원합니다.</p>
+            <div class="ai-quick-topics">
+              <button class="ai-quick-chip" data-q="기능 요구사항 작성 방법과 예시를 알려주세요">기능 요구사항</button>
+              <button class="ai-quick-chip" data-q="성능 요구사항 작성 방법을 알려주세요">성능 요구사항</button>
+              <button class="ai-quick-chip" data-q="보안 요구사항 작성 방법을 알려주세요">보안 요구사항</button>
+              <button class="ai-quick-chip" data-q="제안요청서와 제안서 비교분석을 해주세요">제안서 비교분석</button>
+              <button class="ai-quick-chip" data-q="제안요청서 전체 템플릿을 만들어주세요">제안요청서 템플릿</button>
+              <button class="ai-quick-chip" data-q="요구사항 추적 매트릭스 작성 방법을 알려주세요">추적 매트릭스</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 입력 영역 -->
+        <div class="ai-input-area">
+          <div id="aiImgPreview"></div>
+          <div class="ai-input-row">
+            <label class="ai-attach-label" title="이미지 첨부">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+              <input type="file" id="aiImgInput" accept="image/*" style="display:none">
+            </label>
+            <textarea id="aiPrompt" rows="1" placeholder="제안요청서 작성에 대해 질문하세요... (Shift+Enter: 줄바꿈)"></textarea>
+            <button class="ai-send-btn" id="aiSendBtn" title="전송">
+              <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+            </button>
+          </div>
+          <div class="ai-input-hint">참고: swit.or.kr &gt; 정보센터 &gt; SW제도자료실 「공공SW사업 제안요청서 작성을 위한 요구사항 상세화 실무가이드」</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── AI API 설정 모달 ── -->
+  <div class="settings-overlay" id="settingsOverlay">
+    <div class="settings-modal">
+      <div class="settings-modal-header">
+        <div class="settings-modal-title">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+          AI API 설정
+        </div>
+        <button class="modal-close" id="settCancelBtn">✕</button>
+      </div>
+
+      <div class="settings-field">
+        <label>AI 제공자 선택</label>
+        <select id="settProvider">
+          <option value="openai">OpenAI (GPT-4o) — platform.openai.com</option>
+          <option value="claude">Anthropic Claude (Sonnet) — console.anthropic.com</option>
+        </select>
+        <div class="settings-field-hint" id="settProviderDesc">OpenAI API 키 (sk-...) • platform.openai.com에서 발급</div>
+      </div>
+
+      <div class="settings-field">
+        <label>API 키</label>
+        <div class="settings-key-wrap">
+          <input type="password" id="settApiKey" placeholder="API 키를 입력하세요" autocomplete="off" spellcheck="false">
+          <label class="settings-show-key">
+            <input type="checkbox" id="settShowKey"> 표시
+          </label>
+        </div>
+        <div class="settings-field-hint">
+          입력한 API 키는 브라우저 로컬스토리지에만 저장되며 외부로 전송되지 않습니다.
+        </div>
+      </div>
+
+      <div class="settings-field" style="background:var(--subtle);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px 16px">
+        <div style="font-size:0.78rem;font-weight:700;color:var(--text);margin-bottom:6px">📌 API 키 발급 안내</div>
+        <div style="font-size:0.76rem;color:var(--muted);line-height:1.7">
+          • <strong>OpenAI</strong>: platform.openai.com → API keys → Create new secret key<br>
+          • <strong>Claude</strong>: console.anthropic.com → API Keys → Create Key<br>
+          • 이미지 분석은 GPT-4o 또는 Claude Sonnet 이상 필요
+        </div>
+      </div>
+
+      <div class="settings-actions">
+        <button class="btn-test" id="settTestBtn">🔌 연결 테스트</button>
+        <button class="btn-cancel" id="settCancelBtn2">취소</button>
+        <button class="btn-primary" id="settSaveBtn">💾 저장</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 비교분석 모달 ── -->
+  <div class="compare-overlay" id="compareOverlay">
+    <div class="compare-modal">
+      <div class="compare-modal-header">
+        <div class="compare-modal-title">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+          제안요청서 vs 제안서 심층 비교분석
+        </div>
+        <button class="modal-close" id="compareClose">✕</button>
+      </div>
+      <div class="compare-modal-body" id="compareBody"></div>
+    </div>
+  </div>
 
   <!-- ── 스킬 팝업 모달 ── -->
   <div class="modal-overlay" id="modalOverlay">
@@ -1858,6 +2907,687 @@
       writeOverlay.classList.remove('open');
       showToast('✅ 등록됐습니다!');
     });
+
+    /* ════════════════════════════════════════════════════════
+       AI 검색 — API 키 기반 실시간 챗봇
+       참조: swit.or.kr 공공SW사업 제안요청서 요구사항 상세화 실무가이드
+    ════════════════════════════════════════════════════════ */
+
+    // ── 상태
+    const AI = {
+      key:       localStorage.getItem('kdn_ai_key')      || '',
+      provider:  localStorage.getItem('kdn_ai_provider') || 'openai',
+      history:   [],
+      generating: false,
+      imgBase64: null,
+      imgMime:   null
+    };
+
+    // ── 시스템 프롬프트
+    const AI_SYSTEM = `당신은 공공SW사업 제안요청서 작성 전문 AI 어시스턴트입니다.
+
+[역할]
+SW산업정보종합시스템(swit.or.kr > 정보센터 > SW제도자료실) 수록 「공공SW사업 제안요청서 작성을 위한 요구사항 상세화 실무가이드」를 기반으로 사용자 질문에 답변합니다.
+
+[답변 형식 — 요구사항 항목 질문 시 아래 구조로 답변]
+
+## 📌 작성 방향
+작성 목적과 핵심 원칙 (2~3문장)
+
+## 📋 가이드라인
+단계별 작성 방법 번호 리스트 (5~7항목), 가이드 원문 기반
+
+## 💡 구체적 예시
+마크다운 테이블로 요구사항 예시:
+| 요구사항ID | 요구사항명 | 상세 내용 | 우선순위 |
+
+## 🏢 적용 프로젝트
+적용 공공SW 프로젝트 유형 및 실사례 (GIS, ERP, 포털, 행정시스템 등)
+
+## 📄 제안요청서(RFP) 작성 예시
+\`\`\`
+실제 RFP 문서에 들어갈 완성된 형식의 예시
+\`\`\`
+
+## 📝 업체 제안서 작성 예시
+\`\`\`
+발주처 RFP에 대응하는 업체 제안서 완성 예시
+\`\`\`
+
+[비교분석 요청 시]
+제안요청서 요구사항 vs 제안서 마크다운 비교표:
+| 요구사항ID | 요구사항명 | RFP 요구사항 | 제안서 대응 | 이행수준 | 비고 |
+이행수준: 완전이행/부분이행/미이행
+종합 적합도 점수(100점), 개선 권고사항 3~5개 포함
+
+[산출물 생성 요청 시]
+- .doc 요청: Word에서 열 수 있는 완전한 HTML 문서 (코드블록 \`\`\`html로 감싸기)
+- .ppt 요청: "## 슬라이드 N: 제목" 형식으로 8~12개 슬라이드 내용 생성
+- .svg 요청: 요구사항 구조도 또는 프로세스 다이어그램 SVG 코드 (코드블록 \`\`\`svg로 감싸기, 800×600px, 한국어)
+
+[이미지 첨부 시]
+첨부 이미지(설계서·화면·도표 등)를 분석하여 관련 요구사항 작성 지원
+
+항상 한국어로 답변하며, 공공SW 실무에 즉시 적용 가능한 구체적 내용 제공.`;
+
+    // ── marked 설정
+    if (typeof marked !== 'undefined') {
+      marked.setOptions({ breaks: true, gfm: true });
+    }
+    function renderMd(text) {
+      return typeof marked !== 'undefined' ? marked.parse(text) : text.replace(/\n/g, '<br>');
+    }
+
+    // ── DOM refs
+    const aiMsgsEl   = document.getElementById('aiMessages');
+    const aiWelcomeEl = document.getElementById('aiWelcome');
+    const aiPromptEl  = document.getElementById('aiPrompt');
+    const aiSendBtnEl = document.getElementById('aiSendBtn');
+    const aiImgInputEl = document.getElementById('aiImgInput');
+    const aiImgPreviewEl = document.getElementById('aiImgPreview');
+    const settOverlay  = document.getElementById('settingsOverlay');
+    const cmpOverlay   = document.getElementById('compareOverlay');
+
+    // ── 설정 모달
+    function openSettings() {
+      document.getElementById('settApiKey').value = AI.key;
+      document.getElementById('settProvider').value = AI.provider;
+      updateProviderDesc(AI.provider);
+      settOverlay.classList.add('open');
+    }
+    function closeSettings() { settOverlay.classList.remove('open'); }
+
+    function updateProviderDesc(prov) {
+      const el = document.getElementById('settProviderDesc');
+      el.textContent = prov === 'openai'
+        ? 'OpenAI API 키 (sk-...) • platform.openai.com에서 발급'
+        : 'Anthropic API 키 (sk-ant-...) • console.anthropic.com에서 발급';
+    }
+
+    function saveSettings() {
+      const key  = document.getElementById('settApiKey').value.trim();
+      const prov = document.getElementById('settProvider').value;
+      if (!key) { showToast('⚠️ API 키를 입력해주세요'); return; }
+      AI.key = key; AI.provider = prov;
+      localStorage.setItem('kdn_ai_key', key);
+      localStorage.setItem('kdn_ai_provider', prov);
+      updateApiStatusUI();
+      closeSettings();
+      showToast('✅ API 키가 저장되었습니다');
+    }
+
+    async function testConnection() {
+      const key  = document.getElementById('settApiKey').value.trim();
+      const prov = document.getElementById('settProvider').value;
+      if (!key) { showToast('⚠️ API 키를 입력해주세요'); return; }
+      const btn = document.getElementById('settTestBtn');
+      btn.textContent = '연결 중...'; btn.disabled = true;
+      try {
+        if (prov === 'openai') {
+          const r = await fetch('https://api.openai.com/v1/models', {
+            headers: { 'Authorization': `Bearer ${key}` }
+          });
+          if (!r.ok) { const d = await r.json(); throw new Error(d.error?.message || `HTTP ${r.status}`); }
+          showToast('✅ OpenAI 연결 성공!');
+        } else {
+          const r = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+            body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 5, messages: [{ role: 'user', content: 'hi' }] })
+          });
+          if (!r.ok) { const d = await r.json(); throw new Error(d.error?.message || `HTTP ${r.status}`); }
+          showToast('✅ Claude 연결 성공!');
+        }
+      } catch(e) {
+        showToast('❌ 연결 실패: ' + e.message);
+      }
+      btn.textContent = '🔌 연결 테스트'; btn.disabled = false;
+    }
+
+    function updateApiStatusUI() {
+      const dot = document.getElementById('apiStatusDot');
+      const btn = document.getElementById('openSettingsBtn');
+      if (!dot || !btn) return;
+      if (AI.key) {
+        dot.className = 'api-status-dot connected';
+        dot.title = `${AI.provider === 'openai' ? 'OpenAI' : 'Claude'} API 연결됨`;
+        btn.classList.add('key-set');
+        btn.innerHTML = btn.innerHTML.replace('AI 설정', AI.provider === 'openai' ? 'GPT-4o ✓' : 'Claude ✓');
+      } else {
+        dot.className = 'api-status-dot disconnected';
+        dot.title = 'API 키 미설정 — 클릭하여 설정';
+        btn.classList.remove('key-set');
+      }
+    }
+
+    // ── 채팅 메시지 렌더링
+    function hideWelcome() {
+      if (aiWelcomeEl) aiWelcomeEl.style.display = 'none';
+    }
+
+    function scrollBottom() { aiMsgsEl.scrollTop = aiMsgsEl.scrollHeight; }
+
+    const BOT_AVATAR_SVG = `<svg viewBox="0 0 24 24" fill="white" width="16" height="16"><path d="M6 18c0 .55.45 1 1 1h1v3.5c0 .83.67 1.5 1.5 1.5S11 23.33 11 22.5V19h2v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h1c.55 0 1-.45 1-1V8H6v10zM3.5 8C2.67 8 2 8.67 2 9.5v7c0 .83.67 1.5 1.5 1.5S5 17.33 5 16.5v-7C5 8.67 4.33 8 3.5 8zm17 0c-.83 0-1.5.67-1.5 1.5v7c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-7c0-.83-.67-1.5-1.5-1.5zm-4.97-5.84l1.3-1.3c.2-.2.2-.51 0-.71-.2-.2-.51-.2-.71 0l-1.48 1.48C13.85 1.23 12.95 1 12 1c-.96 0-1.86.23-2.66.63L7.85.15c-.2-.2-.51-.2-.71 0-.2.2-.2.51 0 .71l1.31 1.31C6.97 3.26 6 5.01 6 7h12c0-1.99-.97-3.75-2.47-4.84zM10 5H9V4h1v1zm5 0h-1V4h1v1z"/></svg>`;
+
+    function addUserMsg(text, imgBase64, imgMime) {
+      hideWelcome();
+      const el = document.createElement('div');
+      el.className = 'ai-msg user';
+      const imgHtml = imgBase64
+        ? `<img src="data:${imgMime};base64,${imgBase64}" style="max-width:200px;max-height:150px;border-radius:8px;display:block;margin-bottom:6px;border:1px solid rgba(255,255,255,0.2)">`
+        : '';
+      el.innerHTML = `<div class="ai-msg-avatar">나</div><div class="ai-msg-bubble">${imgHtml}${escHtml(text)}</div>`;
+      aiMsgsEl.appendChild(el);
+      scrollBottom();
+    }
+
+    function buildBotActions(text) {
+      return `<div class="ai-resp-actions">
+        <button class="ai-doc-btn doc" data-type="doc" data-ctx="${encodeURIComponent(text.slice(0,2000))}">📄 .doc 생성</button>
+        <button class="ai-doc-btn ppt" data-type="ppt" data-ctx="${encodeURIComponent(text.slice(0,2000))}">📊 .ppt 생성</button>
+        <button class="ai-doc-btn svg-btn" data-type="svg" data-ctx="${encodeURIComponent(text.slice(0,2000))}">🎨 .svg 생성</button>
+        <button class="ai-compare-btn" data-ctx="${encodeURIComponent(text.slice(0,2000))}">🔍 제안서 비교분석</button>
+      </div>`;
+    }
+
+    function attachBotBtns(el) {
+      el.querySelectorAll('.ai-doc-btn').forEach(b => {
+        b.addEventListener('click', () => generateDocument(b.dataset.type, decodeURIComponent(b.dataset.ctx)));
+      });
+      el.querySelector('.ai-compare-btn')?.addEventListener('click', function() {
+        showCompareAnalysis(decodeURIComponent(this.dataset.ctx));
+      });
+    }
+
+    function addBotMsg(text) {
+      const el = document.createElement('div');
+      el.className = 'ai-msg bot';
+      el.innerHTML = `<div class="ai-msg-avatar">${BOT_AVATAR_SVG}</div>
+        <div class="ai-msg-bubble bot-content">${renderMd(text)}${buildBotActions(text)}</div>`;
+      aiMsgsEl.appendChild(el);
+      attachBotBtns(el);
+      scrollBottom();
+      return el;
+    }
+
+    function showTypingIndicator() {
+      hideWelcome();
+      const el = document.createElement('div');
+      el.className = 'ai-msg bot'; el.id = 'aiTyping';
+      el.innerHTML = `<div class="ai-msg-avatar">${BOT_AVATAR_SVG}</div>
+        <div class="ai-typing-dots"><div class="ai-typing-dot"></div><div class="ai-typing-dot"></div><div class="ai-typing-dot"></div></div>`;
+      aiMsgsEl.appendChild(el);
+      scrollBottom();
+    }
+    function removeTypingIndicator() { document.getElementById('aiTyping')?.remove(); }
+
+    // ── 스트리밍 API 호출
+    async function sendMessage(text) {
+      if (AI.generating) return;
+      if (!text.trim() && !AI.imgBase64) return;
+      if (!AI.key) { openSettings(); showToast('⚙️ AI 설정에서 API 키를 먼저 입력해주세요'); return; }
+
+      AI.generating = true;
+      aiSendBtnEl.classList.remove('ready');
+
+      const imgB64  = AI.imgBase64;
+      const imgMime = AI.imgMime;
+      addUserMsg(text, imgB64, imgMime);
+      clearImg();
+
+      // 히스토리 추가 (OpenAI 형식 기준, Claude 변환은 API 호출 시)
+      let userContent;
+      if (imgB64) {
+        userContent = [
+          { type: 'image_url', image_url: { url: `data:${imgMime};base64,${imgB64}`, detail: 'high' } },
+          { type: 'text', text }
+        ];
+      } else {
+        userContent = text;
+      }
+      AI.history.push({ role: 'user', content: userContent });
+
+      showTypingIndicator();
+
+      try {
+        let fullText = '';
+        if (AI.provider === 'openai') {
+          fullText = await streamOpenAI(AI.history);
+        } else {
+          fullText = await streamClaude(AI.history);
+        }
+        AI.history.push({ role: 'assistant', content: fullText });
+      } catch(err) {
+        removeTypingIndicator();
+        let msg = err.message;
+        if (msg.includes('401')) msg = 'API 키가 올바르지 않습니다. AI 설정에서 키를 확인해주세요.';
+        else if (msg.includes('429')) msg = 'API 요청 한도 초과입니다. 잠시 후 다시 시도해주세요.';
+        else if (msg.includes('Failed to fetch') || msg.includes('NetworkError')) msg = '네트워크 오류입니다. 인터넷 연결 또는 API URL을 확인해주세요.';
+        addBotMsg(`**오류 발생**\n\n${msg}`);
+      }
+
+      AI.generating = false;
+      updateSendBtn();
+    }
+
+    async function streamOpenAI(history) {
+      const messages = [
+        { role: 'system', content: AI_SYSTEM },
+        ...history
+      ];
+      const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AI.key}` },
+        body: JSON.stringify({ model: 'gpt-4o', messages, max_tokens: 4000, temperature: 0.3, stream: true })
+      });
+      if (!resp.ok) {
+        const d = await resp.json().catch(() => ({}));
+        throw new Error(d.error?.message || `HTTP ${resp.status}`);
+      }
+      return readStream(resp, 'openai');
+    }
+
+    async function streamClaude(history) {
+      // OpenAI 형식 히스토리를 Claude 형식으로 변환
+      const messages = history.map(m => {
+        if (!Array.isArray(m.content)) return m;
+        return {
+          role: m.role,
+          content: m.content.map(c => {
+            if (c.type === 'image_url') {
+              const [hdr, data] = c.image_url.url.split(',');
+              const mime = hdr.match(/:(.*?);/)[1];
+              return { type: 'image', source: { type: 'base64', media_type: mime, data } };
+            }
+            return c;
+          })
+        };
+      });
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': AI.key,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({ model: 'claude-sonnet-4-6', system: AI_SYSTEM, messages, max_tokens: 4000, stream: true })
+      });
+      if (!resp.ok) {
+        const d = await resp.json().catch(() => ({}));
+        throw new Error(d.error?.message || `HTTP ${resp.status}`);
+      }
+      return readStream(resp, 'claude');
+    }
+
+    async function readStream(resp, provider) {
+      const reader  = resp.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '', fullText = '';
+
+      // 스트리밍 메시지 엘리먼트 생성
+      removeTypingIndicator();
+      const el = document.createElement('div');
+      el.className = 'ai-msg bot';
+      el.innerHTML = `<div class="ai-msg-avatar">${BOT_AVATAR_SVG}</div>
+        <div class="ai-msg-bubble bot-content streaming" id="streamBubble"></div>`;
+      aiMsgsEl.appendChild(el);
+      const bubbleEl = document.getElementById('streamBubble');
+
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue;
+            const raw = line.slice(6).trim();
+            if (raw === '[DONE]') break;
+            try {
+              const json = JSON.parse(raw);
+              let delta = '';
+              if (provider === 'openai') {
+                delta = json.choices?.[0]?.delta?.content || '';
+              } else {
+                if (json.type === 'content_block_delta' && json.delta?.type === 'text_delta') {
+                  delta = json.delta.text || '';
+                }
+              }
+              if (delta) {
+                fullText += delta;
+                bubbleEl.innerHTML = renderMd(fullText) + '<span class="streaming-cursor">▋</span>';
+                scrollBottom();
+              }
+            } catch {}
+          }
+        }
+      } finally {
+        try { reader.releaseLock(); } catch {}
+      }
+
+      bubbleEl.id = '';
+      bubbleEl.classList.remove('streaming');
+      bubbleEl.innerHTML = renderMd(fullText) + buildBotActions(fullText);
+      attachBotBtns(bubbleEl);
+      scrollBottom();
+      return fullText;
+    }
+
+    // ── 이미지 처리
+    function handleImgUpload(file) {
+      if (!file?.type.startsWith('image/')) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const url = e.target.result;
+        const [, data] = url.split(',');
+        AI.imgBase64 = data;
+        AI.imgMime   = file.type;
+        aiImgPreviewEl.innerHTML = `
+          <div class="ai-img-preview">
+            <img src="${url}" alt="첨부 이미지">
+            <span class="ai-img-preview-name">${file.name}</span>
+            <button class="ai-img-remove" id="imgRemoveBtn">✕</button>
+          </div>`;
+        document.getElementById('imgRemoveBtn').addEventListener('click', clearImg);
+        updateSendBtn();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearImg() {
+      AI.imgBase64 = null; AI.imgMime = null;
+      aiImgPreviewEl.innerHTML = '';
+      aiImgInputEl.value = '';
+      updateSendBtn();
+    }
+
+    // ── 산출물 생성
+    async function generateDocument(type, context) {
+      if (!AI.key) { openSettings(); showToast('⚙️ API 키를 먼저 설정해주세요'); return; }
+      showToast(`📄 ${type.toUpperCase()} 파일 생성 중...`);
+
+      const prompts = {
+        doc: `위 내용을 Microsoft Word에서 열 수 있는 HTML 형식 문서로 생성해주세요. 제목/소제목/본문/표를 갖춘 완전한 문서 형태로 작성하고, 반드시 \`\`\`html 코드블록으로 감싸서 HTML만 출력하세요.`,
+        ppt: `위 내용을 PowerPoint 프레젠테이션으로 생성해주세요. "## 슬라이드 N: 제목" 형식으로 8~12개 슬라이드를 구성하고, 각 슬라이드에 핵심 내용 3~5개를 불릿으로 작성하세요.`,
+        svg: `위 내용의 요구사항 구조도 또는 프로세스 다이어그램을 SVG로 생성해주세요. 800×600px, 한국어 텍스트 포함. 반드시 \`\`\`svg 코드블록으로 감싸서 SVG 코드만 출력하세요.`
+      };
+
+      try {
+        const docMsgs = [
+          { role: 'user', content: context },
+          { role: 'assistant', content: '내용을 확인했습니다. 요청하신 형식으로 산출물을 생성하겠습니다.' },
+          { role: 'user', content: prompts[type] }
+        ];
+        let result = '';
+        if (AI.provider === 'openai') {
+          const r = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AI.key}` },
+            body: JSON.stringify({ model: 'gpt-4o', messages: [{ role: 'system', content: AI_SYSTEM }, ...docMsgs], max_tokens: 4000 })
+          });
+          const d = await r.json();
+          if (!r.ok) throw new Error(d.error?.message || `HTTP ${r.status}`);
+          result = d.choices[0].message.content;
+        } else {
+          const r = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-api-key': AI.key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+            body: JSON.stringify({ model: 'claude-sonnet-4-6', system: AI_SYSTEM, messages: docMsgs, max_tokens: 4000 })
+          });
+          const d = await r.json();
+          if (!r.ok) throw new Error(d.error?.message || `HTTP ${r.status}`);
+          result = d.content[0].text;
+        }
+        downloadDoc(type, result);
+      } catch(e) {
+        showToast('❌ 생성 실패: ' + e.message);
+      }
+    }
+
+    function downloadDoc(type, content) {
+      const today = new Date().toISOString().slice(0, 10);
+      let blob, filename;
+
+      if (type === 'doc') {
+        const m = content.match(/```html?\n?([\s\S]*?)```/);
+        const body = m ? m[1] : content;
+        const html = `<!DOCTYPE html><html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">
+<head><meta charset="UTF-8"><style>
+body{font-family:'맑은 고딕',sans-serif;font-size:11pt;margin:2cm;line-height:1.8;color:#0F1B33}
+h1{font-size:16pt;color:#0F1B33;border-bottom:2px solid #0F1B33;padding-bottom:6pt;margin-bottom:12pt}
+h2{font-size:14pt;color:#1B2A4A;margin-top:16pt;margin-bottom:8pt}
+h3{font-size:12pt;color:#2A3A5C;margin-top:12pt}
+table{border-collapse:collapse;width:100%;margin:8pt 0}
+th{background:#0F1B33;color:#fff;padding:6pt 10pt;text-align:left;font-size:10pt}
+td{border:1px solid #ccc;padding:5pt 10pt;font-size:10pt}
+tr:nth-child(even) td{background:#f0f2f8}
+</style></head><body>${body}</body></html>`;
+        blob = new Blob([html], { type: 'application/msword;charset=utf-8' });
+        filename = `공공SW제안요청서_${today}.doc`;
+
+      } else if (type === 'ppt') {
+        const rawSlides = content.split(/## 슬라이드 \d+[:\s]/);
+        const slideArr = rawSlides.filter(s => s.trim());
+        let slidesHtml = '';
+        slideArr.forEach((s, i) => {
+          const lines = s.trim().split('\n');
+          const title = lines[0].trim().replace(/^#+\s*/, '');
+          const items = lines.slice(1).filter(l => l.trim())
+            .map(l => `<li>${l.replace(/^[-•*]\s*/, '').trim()}</li>`).join('');
+          slidesHtml += `<div class="slide"><span class="snum">${i+1} / ${slideArr.length}</span><h2>${title}</h2><ul>${items}</ul></div>`;
+        });
+        const pptHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+body{font-family:'맑은 고딕',sans-serif;background:#0F1B33;margin:0;padding:24px}
+.slide{background:#fff;width:860px;min-height:480px;margin:20px auto;padding:56px 64px;border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.4);position:relative;page-break-after:always}
+.snum{position:absolute;top:18px;right:28px;font-size:0.75rem;color:#aaa}
+h2{color:#0F1B33;font-size:1.9rem;margin:0 0 20px;padding-bottom:12px;border-bottom:3px solid #3D6FE0}
+ul{padding-left:22px;margin:0}
+li{font-size:1.05rem;color:#1B2A4A;margin-bottom:12px;line-height:1.65}
+@media print{body{background:#fff;padding:0}.slide{box-shadow:none;margin:0;min-height:100vh;border-radius:0}}
+</style></head><body>${slidesHtml}</body></html>`;
+        blob = new Blob([pptHtml], { type: 'text/html;charset=utf-8' });
+        filename = `공공SW제안서_슬라이드_${today}.ppt.html`;
+
+      } else {
+        const m = content.match(/```svg\n?([\s\S]*?)```/);
+        const svgCode = m ? m[1] : content;
+        blob = new Blob([svgCode], { type: 'image/svg+xml;charset=utf-8' });
+        filename = `공공SW요구사항_다이어그램_${today}.svg`;
+      }
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; a.click();
+      URL.revokeObjectURL(url);
+      showToast(`✅ ${filename} 다운로드`);
+    }
+
+    // ── 제안서 비교분석
+    async function showCompareAnalysis(context) {
+      if (!AI.key) { openSettings(); showToast('⚙️ API 키를 먼저 설정해주세요'); return; }
+      cmpOverlay.classList.add('open');
+      document.getElementById('compareBody').innerHTML = `
+        <div style="text-align:center;padding:48px;color:var(--muted)">
+          <div style="display:flex;justify-content:center;gap:6px;margin-bottom:14px">
+            <div class="ai-typing-dot"></div><div class="ai-typing-dot"></div><div class="ai-typing-dot"></div>
+          </div>
+          <div>AI가 제안요청서 vs 제안서 심층 비교분석 중...</div>
+        </div>`;
+
+      const prompt = `다음 내용을 기반으로 공공SW사업 제안요청서(RFP) 요구사항과 업체 제안서를 심층 비교분석해주세요.
+
+${context ? '참고 내용:\n' + context + '\n\n' : ''}아래 형식으로 마크다운 비교분석 보고서를 작성하세요:
+
+## 1. 요구사항별 이행수준 비교표
+| 요구사항ID | 요구사항명 | RFP 요구사항 요약 | 제안서 이행 내용 요약 | 이행수준 | 비고 |
+(이행수준: 완전이행 / 부분이행 / 미이행, 10개 이상 행 포함)
+
+## 2. 종합 적합도 분석
+- 완전이행: N개 (X%)
+- 부분이행: N개 (X%)
+- 미이행: N개 (X%)
+- **종합 점수: XX점 / 100점**
+- 판정: 적합 / 조건부 적합 / 부적합
+
+## 3. 강점 분석
+(제안서가 잘 이행한 항목 3개)
+
+## 4. 미충족 항목 및 개선 권고사항
+(미이행/부분이행 항목별 구체적 보완 방안 3~5개)
+
+## 5. 종합 의견
+공공SW 사업 실무 관점에서 제안서의 종합 평가
+
+실무에 바로 적용 가능한 현실적이고 구체적인 내용으로 작성해주세요.`;
+
+      try {
+        let result = '';
+        const msgs = [{ role: 'user', content: prompt }];
+        if (AI.provider === 'openai') {
+          const r = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AI.key}` },
+            body: JSON.stringify({ model: 'gpt-4o', messages: [{ role: 'system', content: AI_SYSTEM }, ...msgs], max_tokens: 3500 })
+          });
+          const d = await r.json();
+          if (!r.ok) throw new Error(d.error?.message || `HTTP ${r.status}`);
+          result = d.choices[0].message.content;
+        } else {
+          const r = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-api-key': AI.key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+            body: JSON.stringify({ model: 'claude-sonnet-4-6', system: AI_SYSTEM, messages: msgs, max_tokens: 3500 })
+          });
+          const d = await r.json();
+          if (!r.ok) throw new Error(d.error?.message || `HTTP ${r.status}`);
+          result = d.content[0].text;
+        }
+
+        const encResult = encodeURIComponent(result);
+        document.getElementById('compareBody').innerHTML = `
+          <div class="bot-content" style="font-size:0.85rem;line-height:1.75">${renderMd(result)}</div>
+          <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end">
+            <button class="btn-primary" id="cmpDownloadBtn">📥 .doc 다운로드</button>
+          </div>`;
+        document.getElementById('cmpDownloadBtn').addEventListener('click', () => {
+          downloadDoc('doc', `<h1>제안요청서 vs 제안서 비교분석 보고서</h1>${renderMd(result)}`);
+        });
+      } catch(e) {
+        document.getElementById('compareBody').innerHTML = `<div style="color:#dc2626;padding:24px"><strong>오류:</strong> ${e.message}</div>`;
+      }
+    }
+
+    // ── 보내기 버튼 활성화
+    function updateSendBtn() {
+      const active = (aiPromptEl.value.trim().length > 0 || !!AI.imgBase64) && !AI.generating;
+      aiSendBtnEl.classList.toggle('ready', active);
+    }
+
+    // ── 새 대화
+    function clearAiChat() {
+      AI.history = []; AI.generating = false;
+      clearImg();
+      aiMsgsEl.innerHTML = '';
+      // 웰컴 복원
+      const w = document.createElement('div');
+      w.className = 'ai-welcome'; w.id = 'aiWelcome';
+      w.innerHTML = `
+        <div class="ai-welcome-icon">
+          <svg viewBox="0 0 24 24" fill="white" width="40" height="40"><path d="M6 18c0 .55.45 1 1 1h1v3.5c0 .83.67 1.5 1.5 1.5S11 23.33 11 22.5V19h2v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h1c.55 0 1-.45 1-1V8H6v10zM3.5 8C2.67 8 2 8.67 2 9.5v7c0 .83.67 1.5 1.5 1.5S5 17.33 5 16.5v-7C5 8.67 4.33 8 3.5 8zm17 0c-.83 0-1.5.67-1.5 1.5v7c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-7c0-.83-.67-1.5-1.5-1.5zm-4.97-5.84l1.3-1.3c.2-.2.2-.51 0-.71-.2-.2-.51-.2-.71 0l-1.48 1.48C13.85 1.23 12.95 1 12 1c-.96 0-1.86.23-2.66.63L7.85.15c-.2-.2-.51-.2-.71 0-.2.2-.2.51 0 .71l1.31 1.31C6.97 3.26 6 5.01 6 7h12c0-1.99-.97-3.75-2.47-4.84zM10 5H9V4h1v1zm5 0h-1V4h1v1z"/></svg>
+        </div>
+        <h2>새 대화를 시작합니다</h2>
+        <p>왼쪽 메뉴에서 항목을 선택하거나 아래에서 질문을 입력하세요.</p>`;
+      aiMsgsEl.appendChild(w);
+      updateSendBtn();
+    }
+
+    // ── 이벤트 리스너
+
+    // 설정 모달
+    document.getElementById('openSettingsBtn').addEventListener('click', openSettings);
+    document.getElementById('apiStatusDot').addEventListener('click', openSettings);
+    settOverlay.addEventListener('click', e => { if (e.target === settOverlay) closeSettings(); });
+    document.getElementById('settCancelBtn').addEventListener('click', closeSettings);
+    document.getElementById('settCancelBtn2').addEventListener('click', closeSettings);
+    document.getElementById('settSaveBtn').addEventListener('click', saveSettings);
+    document.getElementById('settTestBtn').addEventListener('click', testConnection);
+    document.getElementById('settProvider').addEventListener('change', e => updateProviderDesc(e.target.value));
+    document.getElementById('settShowKey').addEventListener('change', e => {
+      document.getElementById('settApiKey').type = e.target.checked ? 'text' : 'password';
+    });
+
+    // 비교분석 모달 닫기
+    document.getElementById('compareClose').addEventListener('click', () => cmpOverlay.classList.remove('open'));
+    cmpOverlay.addEventListener('click', e => { if (e.target === cmpOverlay) cmpOverlay.classList.remove('open'); });
+
+    // 새 대화
+    document.getElementById('aiNewChat').addEventListener('click', clearAiChat);
+
+    // 사이드바 & 퀵칩 버튼
+    document.querySelectorAll('.ai-topic-btn[data-q], .ai-quick-chip[data-q]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const q = btn.dataset.q;
+        if (!q) return;
+        // AI 페이지로 전환
+        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        document.querySelector('[data-page="ai"]').classList.add('active');
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById('page-ai').classList.add('active');
+        sendMessage(q);
+      });
+    });
+
+    // 이미지 업로드
+    aiImgInputEl.addEventListener('change', e => {
+      if (e.target.files[0]) handleImgUpload(e.target.files[0]);
+    });
+
+    // 이미지 드래그&드롭
+    document.getElementById('page-ai').addEventListener('dragover', e => e.preventDefault());
+    document.getElementById('page-ai').addEventListener('drop', e => {
+      e.preventDefault();
+      const f = e.dataTransfer.files[0];
+      if (f?.type.startsWith('image/')) handleImgUpload(f);
+    });
+
+    // 클립보드 붙여넣기 이미지
+    document.addEventListener('paste', e => {
+      if (!document.querySelector('#page-ai.active')) return;
+      const file = Array.from(e.clipboardData.files).find(f => f.type.startsWith('image/'));
+      if (file) handleImgUpload(file);
+    });
+
+    // 프롬프트 입력창
+    aiPromptEl.addEventListener('input', () => {
+      aiPromptEl.style.height = 'auto';
+      aiPromptEl.style.height = Math.min(aiPromptEl.scrollHeight, 140) + 'px';
+      updateSendBtn();
+    });
+
+    aiPromptEl.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey && !AI.generating) {
+        e.preventDefault();
+        const t = aiPromptEl.value.trim();
+        aiPromptEl.value = ''; aiPromptEl.style.height = 'auto';
+        updateSendBtn();
+        sendMessage(t);
+      }
+    });
+
+    aiSendBtnEl.addEventListener('click', () => {
+      if (AI.generating) return;
+      const t = aiPromptEl.value.trim();
+      aiPromptEl.value = ''; aiPromptEl.style.height = 'auto';
+      updateSendBtn();
+      sendMessage(t);
+    });
+
+    // 초기화
+    updateApiStatusUI();
+    updateSendBtn();
+
   </script>
 </body>
 </html>
